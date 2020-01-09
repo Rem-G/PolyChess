@@ -10,7 +10,7 @@ Le jeu se joue dans un terminal de commandes.
 
 ## Fonctionnalités:
 Les fonctionnalités disponible sont les suivantes :
-- **Un mode joueur contre joueur :** Ce mode de jeu permet de faire affronter deux joueurs entre eux. Les règles de base des echecs sont       implémentées (les deplacements disponibles, la mise en échec, échec et mat et le pat). Les coups spéciaux diponible au échecs sont implémentés, tel que le roque, l' en passant et la promotion. A tous moment de la partie les joueurs peuvent voir les pièces qu'ils ont mangé.
+- **Un mode joueur contre joueur :** Ce mode de jeu permet de faire affronter deux joueurs entre eux. Les règles de base des echecs sont       implémentées (les deplacements disponibles, la mise en échec, échec et mat et le pat). Les coups spéciaux disponible au échecs sont implémentés, tel que le roque, l' en passant et la promotion. A tous moment de la partie les joueurs peuvent voir les pièces qu'ils ont mangé.
 - **Sauvegarde d'une partie :** Un joueur peut sauvgarder une partie pour la continuer plus tard.
 
 
