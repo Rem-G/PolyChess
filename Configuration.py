@@ -223,18 +223,19 @@ class GeneralConf():
 
     def mange_piece(self, piece, possible_eat, pos_arrivee):
         """
-        @RG
+        @RG @NR
         """
         for p in self.pieces:
             # Supprime une pièce adverse si la position d'arrivée voulue correspond à l'emplacement d'une pièce adverse
-            if pos_arrivee == p.position and pos_arrivee in possible_eat:
+            if pos_arrivee == p.position and not(self.sameTeam(p, piece)) and pos_arrivee in possible_eat:
                 if p.nom.islower():
                     self.joueurB.add_point(p)
                 else:
                     self.joueurN.add_point(p)
                 self.del_piece(p)
+                piece.set_piece_position(pos_arrivee)
 
-        piece.set_piece_position(pos_arrivee)
+
 
 
     def tour_joueur(self, piece, pos_arrivee):
@@ -258,10 +259,23 @@ class GeneralConf():
                 if not (roque_roi_fait):
                     self.add_msg_error("déplacement interdit ou mise en échec du roi")
 
-        else:
+        if piece.__class__ is Tour:
+            if self.verification_deplacement_tour(piece, piece.PossibleMoves(), pos_arrivee):
+                if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
+                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
+                else:
+                    piece.set_piece_position(pos_arrivee)
 
+            else:
+                self.add_msg_error("Déplacement interdit")
+
+        # NOTE : faire un verfification deplacement pour le pion
+        if (piece.__class__ != Roi) and (piece.__class__ != Tour):
             if self.verification_deplacement(piece.PossibleMoves(), pos_arrivee):
-                self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
+                if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
+                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
+                else:
+                    piece.set_piece_position(pos_arrivee)
 
             else:
                 self.add_msg_error("Déplacement interdit")
@@ -375,6 +389,53 @@ class GeneralConf():
                 return True
         return False
 
+    def verification_deplacement_tour(self, tour, moves, pos_arrivee):
+        """
+        @NR
+        Verifie si le deplacement de la tour est possible, sans l'emmener en echec
+        :param tour: la tour
+        :param moves: deplacements autorisés du tour
+        :param pos_arrivee: Destination voulue par le joueur pour le roi
+        :return bool : renvoie vrai si le deplacement est possible et faux sinon
+        """
+        possible_moves = moves[0]
+        # pas de list possible_eat car c'est la même chose que possible moves pour le roi
+
+        # NOTE : on ne verifie pas si pos_arrivee est dans les possibles moves car les if le font indirectement,
+        # si pos arrivee est sur la même ligne ou sur la même colonne alors pos_arrivee est dans les PossibleMoves il
+        # faut aussi gerer que la tour ne mange pas une piece allie OK
+        # faut aussi le gerer pour le roi OK
+
+        for piece in self.pieces:
+            if piece.position == pos_arrivee and self.sameTeam(piece, tour): #on verfie si la case ou lon veut se deplacer n'est pas occupe par un allie
+                return False
+
+        # modification des moves en prenant en compte l'etat de l'echiquier (postion des pieces)
+        if tour.position[0] == pos_arrivee[0] and tour.position[1]<pos_arrivee[1]: #même ligne, parcours de gauche vers la droite
+            for posCol in range(tour.position[1] +1,pos_arrivee[1] ):
+                if self.case_occupe(tour.position[0], posCol): #on regarde si les cases entre la tour et la pos arrivee son occupes
+                    return False
+            return True
+
+        if tour.position[0] == pos_arrivee[0] and tour.position[1] > pos_arrivee[1]:  # même ligne, parcours de droite vers la gauche
+            for posCol in range(tour.position[1]-1, pos_arrivee[1], -1):
+                if self.case_occupe(tour.position[0],posCol):  # on regarde si les cases entre la tour et la pos arrivee son occupes
+                    return False
+            return True
+
+        if tour.position[1] == pos_arrivee[1] and tour.position[0]<pos_arrivee[0]: #meme colonne, parcours du haut vers le bas
+            for posLine in range(tour.position[0]+1, pos_arrivee[0]):
+                if self.case_occupe(posLine, tour.position[1]):
+                    return False
+            return True
+
+        if tour.position[1] == pos_arrivee[1] and tour.position[0]>pos_arrivee[0]: #meme colonne, parcours du bas vers le haut
+            for posLine in range(tour.position[0]-1, pos_arrivee[0],-1):
+                if self.case_occupe(posLine, tour.position[1]):
+                    return False
+            return True
+
+        return False # car pos arrivee n'est pas dans les PossibleMoves (sur meme ligne ou meme colonne)
 
     def roqueRoi(self, roi, pos_arrivee):
         """
@@ -406,6 +467,7 @@ class GeneralConf():
                     col_roi = roi.get_piece_position()[1]
                     line_tour = tour.get_piece_position()[0]
                     col_tour = tour.get_piece_position()[1]
+
 
                     if col_roi < col_tour:  # petit roque
                         col_roi = col_roi + 2
