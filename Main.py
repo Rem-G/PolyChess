@@ -61,7 +61,7 @@ def init_pieces(configuration):
     configuration.add_piece(Fou("f", [2, 3]))
     configuration.add_piece(Fou("f", [2, 6]))
 
-    #configuration.add_piece(Dame("d", [2, 4]))
+    configuration.add_piece(Dame("d", [2, 4]))
 
     roiN = Roi("r", [2, 5])
     configuration.add_piece(roiN)

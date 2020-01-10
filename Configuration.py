@@ -412,10 +412,10 @@ class GeneralConf():
     def verification_deplacement_tour(self, tour, moves, pos_arrivee):
         """
         @NR
-        Verifie si le deplacement de la tour est possible, sans l'emmener en echec
+        Verifie si le deplacement de la tour est possible
         :param tour: la tour
         :param moves: deplacements autorisés du tour
-        :param pos_arrivee: Destination voulue par le joueur pour le roi
+        :param pos_arrivee: Destination voulue par le joueur pour la tour
         :return bool : renvoie vrai si le deplacement est possible et faux sinon
         """
         possible_moves = moves[0]
@@ -460,10 +460,10 @@ class GeneralConf():
     def verification_deplacement_fou(self, fou, moves, pos_arrivee):
         """
          @NR
-        Verifie si le deplacement du fou est possible, sans l'emmener en echec
+        Verifie si le deplacement du fou est possible
         :param fou: le fou
         :param moves: deplacements autorisés du tour
-        :param pos_arrivee: Destination voulue par le joueur pour le roi
+        :param pos_arrivee: Destination voulue par le joueur pour le fou
         :return bool : renvoie vrai si le deplacement est possible et faux sinon
         """
         possible_moves = moves[0]
@@ -534,6 +534,14 @@ class GeneralConf():
         return False #pos_arrivee n'est pas sur une diagonale
 
     def verification_deplacement_dame(self, dame, moves, pos_arrivee):
+        """
+         @NR
+        Verifie si le deplacement de la dame est possible
+        :param dame: la dame
+        :param moves: deplacements autorisés du tour
+        :param pos_arrivee: Destination voulue par le joueur pour la dame
+        :return bool : renvoie vrai si le deplacement est possible et faux sinon
+        """
         if self.verification_deplacement_tour(dame,moves, pos_arrivee) or self.verification_deplacement_fou(dame,moves, pos_arrivee):
             return True
         return False
