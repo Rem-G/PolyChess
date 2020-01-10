@@ -9,6 +9,15 @@ class Joueur():
         self.points = points
         self.couleur = couleur
         self.pieces_mangees = list()
+        self.BOT = False
+
+    def init_bot(self, configuration):
+        """
+        :param couleur:
+        :param configuration:
+        :return:
+        """
+        self.BOT = Bot(self.couleur, configuration)
 
     def add_point(self, piece):
         """

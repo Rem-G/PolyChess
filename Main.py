@@ -214,35 +214,44 @@ def game_pvp():
 
             configuration.msg_error = list()
 
-def game_pvp1(): #l'ancien, n'est pas utilise
+def game_pvm():
     """
-    @RG @NR
+    @TC
     """
+    print('Vous allez jouer contre un BOT')
     configuration = GeneralConf()
 
-    # Crée les joueurs
+    # Crée le joueur en fonction de son choix
+    valid = False
+    while not(valid):
+        chx_couleur = str(input('Merci de choisir votre camp (B/N) : '))
+        if chx_couleur == 'N' or chx_couleur == 'B':
+            valid = True
+        else:
+            print('ERROR : merci de choisir une couleur de pion valide (B/N).')
+
     configuration.init_joueurs()
 
-    # Crée les pièces de jeu
-    new_game = input("Voulez-vous charger une partie existante ? Y/N ")
-
-    if new_game == 'Y':
-        configuration.charger_partie()
-        joueur = configuration.joueur_sauvegarde
-        print("Partie chargée !")
-    else:
-        init_pieces(configuration)
-        joueur = 1
+    init_pieces(configuration) # Création des pièces
 
     # Attribution pièces de chaque joueur
     configuration.pieces_joueurs()
 
+    print(configuration.joueurN.points)
+    if chx_couleur == 'B':
+        configuration.joueurN.init_bot(configuration)
+    else:
+        configuration.joueurB.init_bot(configuration)
+
     # Affiche le palteau de jeu initial
     affichage_plateau(configuration.matrice_affichage())
 
+    joueur = 1
+
     game = True
 
-    while game:  # Rajouter option echec et mat + afficher pièces mangées
+    while game:
+
         if configuration.avantage_joueur():
             print(configuration.avantage_joueur())
 
@@ -261,10 +270,12 @@ def game_pvp1(): #l'ancien, n'est pas utilise
                 print("Le roi noir est en echec \nProtegez le !")
 
         input_decision = input("\nEntrer x1y1 x2y2  ou sauvegarde pour sauvegarder la partie et quitter: ")
+
         if input_decision == 'sauvegarde':
             configuration.sauvegarde_partie(joueur)
             print('Partie sauvegardée !')
             break
+
         else:
             decision = decision_joueur(input_decision, configuration)
             print('\n')
@@ -288,7 +299,7 @@ def game_pvp1(): #l'ancien, n'est pas utilise
         if len(configuration.msg_error):
             for msg in configuration.msg_error:
                 print("")
-                print('\x1b[0;30;41m' + 'ATTENTION !' + '\x1b[0m')  # couleur rouge
+                print('\x1b[0;30;41m' + 'ATTENTION !' + '\x1b[0m')
                 print(msg)
 
         if not len(configuration.msg_error):
@@ -297,4 +308,12 @@ def game_pvp1(): #l'ancien, n'est pas utilise
         configuration.msg_error = list()
 
 
-game_pvp()
+
+print('Voulez-vous jouer contre :')
+chx = 'M'
+chx = str(input('un humain (H) ou une machine (M) : '))
+
+if chx == 'H':
+    game_pvp()
+else:
+    game_pvm()
