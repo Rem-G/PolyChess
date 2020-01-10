@@ -17,7 +17,7 @@ def init_pieces(configuration):
     Initialisation des pièces de jeu
     Les noms en masjuscule représentent les pièces blanches, et ceux en minuscule les pièces noires
     """
-    # Pieces blanches
+    #Pieces blanches
     configuration.add_piece(Pion("P", [8, 1]))
     configuration.add_piece(Pion("P", [8, 2]))
     configuration.add_piece(Pion("P", [8, 3]))
@@ -61,13 +61,11 @@ def init_pieces(configuration):
     configuration.add_piece(Fou("f", [2, 3]))
     configuration.add_piece(Fou("f", [2, 6]))
 
-    configuration.add_piece(Dame("d", [2, 4]))
+    #configuration.add_piece(Dame("d", [2, 4]))
 
     roiN = Roi("r", [2, 5])
     configuration.add_piece(roiN)
     configuration.init_roi(roiN)
-
-
 
 
 

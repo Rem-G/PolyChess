@@ -269,8 +269,28 @@ class GeneralConf():
             else:
                 self.add_msg_error("Déplacement interdit")
 
+        if piece.__class__ is Fou:
+            if self.verification_deplacement_fou(piece, piece.PossibleMoves(), pos_arrivee):
+                if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
+                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
+                else:
+                    piece.set_piece_position(pos_arrivee)
+
+            else:
+                self.add_msg_error("Déplacement interdit")
+
+        if piece.__class__ is Dame:
+            if self.verification_deplacement_dame(piece, piece.PossibleMoves(), pos_arrivee):
+                if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
+                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
+                else:
+                    piece.set_piece_position(pos_arrivee)
+
+            else:
+                self.add_msg_error("Déplacement interdit")
+
         # NOTE : faire un verfification deplacement pour le pion
-        if (piece.__class__ != Roi) and (piece.__class__ != Tour):
+        if (piece.__class__ != Roi) and (piece.__class__ != Tour) and (piece.__class__ != Fou) and(piece.__class__ != Dame):
             if self.verification_deplacement(piece.PossibleMoves(), pos_arrivee):
                 if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
                     self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
@@ -399,7 +419,7 @@ class GeneralConf():
         :return bool : renvoie vrai si le deplacement est possible et faux sinon
         """
         possible_moves = moves[0]
-        # pas de list possible_eat car c'est la même chose que possible moves pour le roi
+        # pas de list possible_eat car c'est la même chose que possible moves pour le tour
 
         # NOTE : on ne verifie pas si pos_arrivee est dans les possibles moves car les if le font indirectement,
         # si pos arrivee est sur la même ligne ou sur la même colonne alors pos_arrivee est dans les PossibleMoves il
@@ -436,6 +456,87 @@ class GeneralConf():
             return True
 
         return False # car pos arrivee n'est pas dans les PossibleMoves (sur meme ligne ou meme colonne)
+
+    def verification_deplacement_fou(self, fou, moves, pos_arrivee):
+        """
+         @NR
+        Verifie si le deplacement du fou est possible, sans l'emmener en echec
+        :param fou: le fou
+        :param moves: deplacements autorisés du tour
+        :param pos_arrivee: Destination voulue par le joueur pour le roi
+        :return bool : renvoie vrai si le deplacement est possible et faux sinon
+        """
+        possible_moves = moves[0]
+        # pas de list possible_eat car c'est la même chose que possible moves pour le fou
+
+        # NOTE : on ne verifie pas si pos_arrivee est dans les possibles moves car les if le font indirectement,(je verfie finalement)
+        # si pos arrivee est sur une des diagonales alors pos_arrivee est dans les PossibleMoves du fou
+
+        for piece in self.pieces:
+            if piece.position == pos_arrivee and self.sameTeam(piece,
+                                                               fou):  # on verfie si la case ou lon veut se deplacer n'est pas occupe par un allie
+                return False
+
+        if not(pos_arrivee in possible_moves):
+            return False
+
+        posLine = fou.position[0] #y de loic
+        posCol = fou.position[1] #x de loic
+
+        # modification des moves en prenant en compte l'etat de l'echiquier (postion des pieces)
+
+        if fou.position[0] > pos_arrivee[0] and fou.position[1] > pos_arrivee[1]: #on parcours de droite a gauche et du bas vers le haut (diagonale)
+            print("1")
+            posCol = posCol - 1 #on commence apres et on s'arrete avant comme boucle for dans verification deplacement tour
+            posLine = posLine - 1
+            while (posLine >= pos_arrivee[0]+1) and (posCol >= pos_arrivee[1]+1):
+                print(self.case_occupe(posLine, posCol))
+                if posLine<1 or posCol<1 or self.case_occupe(posLine, posCol): #on verifie si on sort de lechiquier
+                    return False
+                posCol = posCol - 1  # bizarre incrementation
+                posLine = posLine - 1
+            return True
+
+        if fou.position[0] > pos_arrivee[0] and fou.position[1] < pos_arrivee[1]: #on parcours  de gauche a droite et du bas vers le haut (diagonale)
+            print("2")
+            posCol = posCol + 1
+            posLine = posLine - 1
+            while (posLine >= pos_arrivee[0]+1) and (posCol <= pos_arrivee[1]-1):
+                if posLine<1 or posCol >8 or self.case_occupe(posLine, posCol):
+                    return False
+                print(posLine, posCol)
+                posCol = posCol + 1
+                posLine = posLine - 1
+            return True
+
+        if fou.position[0] < pos_arrivee[0] and fou.position[1] > pos_arrivee[1]: #on parcours de droite a gauche et du haut vers le bas (diagonale)
+            print("3")
+            posCol = posCol - 1
+            posLine = posLine + 1
+            while (posLine <= pos_arrivee[0]-1) and (posCol >= pos_arrivee[1]+1):
+                if posLine>9 or posCol<1 or self.case_occupe(posLine, posCol):
+                    return False
+                posCol = posCol - 1
+                posLine = posLine + 1
+            return True
+
+        if fou.position[0] < pos_arrivee[0] and fou.position[1] < pos_arrivee[1]: #on parcours  de gauche a droite et du haut vers le bas (diagonale)
+            print("4")
+            posCol = posCol + 1
+            posLine = posLine + 1
+            while (posLine <= pos_arrivee[0]-1) and (posCol <= pos_arrivee[1]-1):
+                if posCol>8 or posLine >9 or self.case_occupe(posLine, posCol):
+                    return False
+                posCol = posCol+1
+                posLine = posLine+1
+            return True
+
+        return False #pos_arrivee n'est pas sur une diagonale
+
+    def verification_deplacement_dame(self, dame, moves, pos_arrivee):
+        if self.verification_deplacement_tour(dame,moves, pos_arrivee) or self.verification_deplacement_fou(dame,moves, pos_arrivee):
+            return True
+        return False
 
     def roqueRoi(self, roi, pos_arrivee):
         """
