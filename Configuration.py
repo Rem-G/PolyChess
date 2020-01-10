@@ -290,8 +290,9 @@ class GeneralConf():
                 self.add_msg_error("Déplacement interdit")
 
         # NOTE : faire un verfification deplacement pour le pion
-        if (piece.__class__ != Roi) and (piece.__class__ != Tour) and (piece.__class__ != Fou) and(piece.__class__ != Dame):
-            if self.verification_deplacement(piece.PossibleMoves(), pos_arrivee):
+
+        if piece.__class__ is Pion:
+            if self.verification_deplacement_pion(piece, piece.PossibleMoves(), pos_arrivee):
                 if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
                     self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
                 else:
@@ -299,6 +300,28 @@ class GeneralConf():
 
             else:
                 self.add_msg_error("Déplacement interdit")
+
+        if piece.__class__ is Cavalier:
+            if self.verification_deplacement_cavalier(piece, piece.PossibleMoves(), pos_arrivee):
+                if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
+                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
+                else:
+                    piece.set_piece_position(pos_arrivee)
+
+            else:
+                self.add_msg_error("Déplacement interdit")
+
+        # if (piece.__class__ != Roi) and (piece.__class__ != Tour) and (piece.__class__ != Fou) and(piece.__class__ != Dame) and((piece.__class__ != Pion)):
+        #     print("cavalier")
+        #     if self.verification_deplacement(piece.PossibleMoves(), pos_arrivee):
+        #         print("1")
+        #         if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
+        #             self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
+        #         else:
+        #             piece.set_piece_position(pos_arrivee)
+        #
+        #     else:
+        #         self.add_msg_error("Déplacement interdit")
 
     def deplacement_piece(self, pos_depart, pos_arrivee, upper):
         """
@@ -543,6 +566,58 @@ class GeneralConf():
         :return bool : renvoie vrai si le deplacement est possible et faux sinon
         """
         if self.verification_deplacement_tour(dame,moves, pos_arrivee) or self.verification_deplacement_fou(dame,moves, pos_arrivee):
+            return True
+        return False
+
+    def verification_deplacement_pion(self, pion, moves, pos_arrivee):
+        """
+         @NR
+        Verifie si le deplacement du pion est possible
+        :param pion: le pion
+        :param moves: deplacements autorisés du pion
+        :param pos_arrivee: Destination voulue par le joueur pour le pion
+        :return bool : renvoie vrai si le deplacement est possible et faux sinon
+        """
+        possible_moves = moves[0]
+        possible_eat = moves[1]
+
+        if pos_arrivee in possible_eat: #pour verifier l'attaque, on verifie si la position d'arrivee est dans les attaques du pion et si la position arrivee est occup par une piece enemi
+            if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
+                for piece in self.pieces:
+                    if piece.position == pos_arrivee and not(self.sameTeam(piece, pion)):
+                        return True
+            return False
+
+        if pos_arrivee in possible_moves or (pos_arrivee in possible_eat): #on ne fait pas l'attaque ici mais dans la fonction mange_piece
+
+            if pion.position[0]<pos_arrivee[0]:
+                for posLine in (pion.position[0]+1, pos_arrivee[0]): #parours du haut vers le bas
+                    if self.case_occupe(posLine, pion.position[1]):
+                        return False
+                return True
+            if pion.position[0]>pos_arrivee[0]:
+                for posLine in (pion.position[0]-1, pos_arrivee[0],-1):
+                    if self.case_occupe(posLine, pion.position[1]): #parcrous du bas vers le heut
+                        return False
+                return True
+        return False
+
+    def verification_deplacement_cavalier(self, cavalier, moves, pos_arrivee):
+        """
+         @NR
+        Verifie si le deplacement du cavalier est possible
+        :param cavalier: le cavalier
+        :param moves: deplacements autorisés du cavalier
+        :param pos_arrivee: Destination voulue par le joueur pour le cavailier
+        :return bool : renvoie vrai si le deplacement est possible et faux sinon
+        """
+        possible_moves = moves[0]
+
+        if pos_arrivee in possible_moves:
+            if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
+                for piece in self.pieces:
+                    if piece.position == pos_arrivee and self.sameTeam(piece, cavalier): #mouvement n'est pas possible si la pos arrivee est occupe par une piece allie
+                        return False
             return True
         return False
 
