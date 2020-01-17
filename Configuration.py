@@ -262,8 +262,10 @@ class GeneralConf():
                 roque_roi_fait = self.roqueRoi(piece, pos_arrivee)
 
             if not (roque_roi_fait) and self.verification_deplacement_roi(piece, piece.PossibleMoves(), pos_arrivee):
-                self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
-
+                if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
+                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
+                else:
+                    piece.set_piece_position(pos_arrivee)
             else:
                 if not (roque_roi_fait):
                     self.add_msg_error("déplacement interdit ou mise en échec du roi")
@@ -406,7 +408,25 @@ class GeneralConf():
             return True
         return False
 
-    def verification_deplacement_roi(self, roi, moves, pos_arrivee): #OK marche
+    def verification_deplacement_new(self, piece, moves, pos_arrivee):
+        """
+        @NR
+        execute les verfication deplacement en fonction du type de la piece
+        """
+        if piece.__class__ is Roi:
+            return self.verification_deplacement_roi(piece, moves, pos_arrivee)
+        if piece.__class__ is Tour:
+            return self.verification_deplacement_tour(piece, moves, pos_arrivee)
+        if piece.__class__ is Fou:
+            return self.verification_deplacement_fou(piece, moves, pos_arrivee)
+        if piece.__class__ is Dame:
+            return self.verification_deplacement_dame(piece, moves, pos_arrivee)
+        if piece.__class__ is Pion:
+            return self.verification_deplacement_pion(piece, moves, pos_arrivee)
+        if piece.__class__ is Cavalier:
+            return self.verification_deplacement_cavalier(piece, moves, pos_arrivee)
+
+    def verification_deplacement_roi(self, roi, moves, pos_arrivee):  # OK marche
         """ @NR
         Verifie si le deplacement du roi est possible, sans l'emmener en echec
         :param roi: le roi
@@ -425,15 +445,19 @@ class GeneralConf():
                 possible_moves.remove(piece.position)
         # pas de probleme si l'emplacement est vide ou il y a un ennemi
         # erbo pour voir si sur ce coup le roi se met en echec
-        emplacements_reachable_by_opponent = list()  # emplacement que les ennemis peuvent atteindre
-        for piece in self.pieces:
-            if not (self.sameTeam(piece, roi)):  # si la piece courante n'est pas dans la meme equipe que le roi
-                for erbo in piece.PossibleMoves()[1]:  # emplacement de capture de la piece enemie
-                    if erbo not in emplacements_reachable_by_opponent:  # Pour ne pas avoir de doublon
-                        emplacements_reachable_by_opponent.append(
-                            erbo)  # on ajoute les emplacements de capture de chaque piece
 
-        if (pos_arrivee in possible_moves) and (pos_arrivee not in emplacements_reachable_by_opponent):
+        # emplacements_reachable_by_opponent = list()  # emplacement que les ennemis peuvent atteindre
+        # for piece in self.pieces:
+        #     if not (self.sameTeam(piece, roi)):  # si la piece courante n'est pas dans la meme equipe que le roi
+        #         for erbo in piece.PossibleMoves()[1]:  # emplacement de capture de la piece enemie
+        #             if erbo not in emplacements_reachable_by_opponent:  # Pour ne pas avoir de doublon
+        #                 emplacements_reachable_by_opponent.append(
+        #                     erbo)  # on ajoute les emplacements de capture de chaque piece
+
+        # emplacements_reachable_by_opponent = self.emplacements_reachable_by_opponent(roi)
+
+        if (pos_arrivee in possible_moves) and not (self.case_menace(pos_arrivee[0], pos_arrivee[1],
+                                                                     roi)):  # and (pos_arrivee not in emplacements_reachable_by_opponent)
             # verification si la position d'arrivee est dans les moves possibles et qu'il n'y pas de piece à cette emplacement ou que on peut manger une piece a cet emplacement
             # et que dans les deux cas la position d'arrivee ne soit pas un emplacement que pourrait prendre l'ennemi
             if self.board.matrice_jeu()[pos_arrivee[0]][pos_arrivee[1]] != -1:
@@ -518,11 +542,9 @@ class GeneralConf():
         # modification des moves en prenant en compte l'etat de l'echiquier (postion des pieces)
 
         if fou.position[0] > pos_arrivee[0] and fou.position[1] > pos_arrivee[1]: #on parcours de droite a gauche et du bas vers le haut (diagonale)
-            print("1")
             posCol = posCol - 1 #on commence apres et on s'arrete avant comme boucle for dans verification deplacement tour
             posLine = posLine - 1
             while (posLine >= pos_arrivee[0]+1) and (posCol >= pos_arrivee[1]+1):
-                print(self.case_occupe(posLine, posCol))
                 if posLine<1 or posCol<1 or self.case_occupe(posLine, posCol): #on verifie si on sort de lechiquier
                     return False
                 posCol = posCol - 1  # bizarre incrementation
@@ -530,19 +552,16 @@ class GeneralConf():
             return True
 
         if fou.position[0] > pos_arrivee[0] and fou.position[1] < pos_arrivee[1]: #on parcours  de gauche a droite et du bas vers le haut (diagonale)
-            print("2")
             posCol = posCol + 1
             posLine = posLine - 1
             while (posLine >= pos_arrivee[0]+1) and (posCol <= pos_arrivee[1]-1):
                 if posLine<1 or posCol >8 or self.case_occupe(posLine, posCol):
                     return False
-                print(posLine, posCol)
                 posCol = posCol + 1
                 posLine = posLine - 1
             return True
 
         if fou.position[0] < pos_arrivee[0] and fou.position[1] > pos_arrivee[1]: #on parcours de droite a gauche et du haut vers le bas (diagonale)
-            print("3")
             posCol = posCol - 1
             posLine = posLine + 1
             while (posLine <= pos_arrivee[0]-1) and (posCol >= pos_arrivee[1]+1):
@@ -553,7 +572,6 @@ class GeneralConf():
             return True
 
         if fou.position[0] < pos_arrivee[0] and fou.position[1] < pos_arrivee[1]: #on parcours  de gauche a droite et du haut vers le bas (diagonale)
-            print("4")
             posCol = posCol + 1
             posLine = posLine + 1
             while (posLine <= pos_arrivee[0]-1) and (posCol <= pos_arrivee[1]-1):
@@ -694,11 +712,12 @@ class GeneralConf():
         :param piece: piece appartenant à l'équipe ami
         :return: True si la case est menace, False sinon
         """
+        pos_arrivee = [posLine, posCol]
         for piece1 in self.pieces:
             if not self.sameTeam(piece, piece1):
-                for case in piece1.PossibleMoves()[1]:  # case que peut attaquer l'ennemi, c'est ici ou il faut prendre les nouveaux deplacements (par PossibleMoves()[1) de base)
-                    if case == [posLine, posCol]:
-                        return True
+                if self.verification_deplacement_new(piece1, piece1.PossibleMoves(),
+                                                     pos_arrivee):  # si la piece enemi peut se deplacer sur cette case alors la case est menace
+                    return True
         return False
 
     def est_en_echec(self, joueur):
@@ -712,11 +731,15 @@ class GeneralConf():
         else:
             roi = self.joueurN.roi
 
-        for piece in self.pieces:
-            #if piece.__class__ is Roi and not piece.nom == 'R'
-            if not(self.sameTeam(piece, roi)): ## normalement a enlever piece.__class__ is Roi car on ne regarde pas que pour le roi mais tous les autres types de pieces
-                if roi.position in piece.PossibleMoves()[1]: #Attention probleme avec possiblesMoves de la reine, et la tour, c'est pour ca que je mis le roi ennemi
-                    return True
+        # for piece in self.pieces:
+        #     #if piece.__class__ is Roi and not piece.nom == 'R'
+        #     if not(self.sameTeam(piece, roi)): ## normalement a enlever piece.__class__ is Roi car on ne regarde pas que pour le roi mais tous les autres types de pieces
+        #         if roi.position in piece.PossibleMoves()[1]: #Attention probleme avec possiblesMoves de la reine, et la tour, c'est pour ca que je mis le roi ennemi
+        #             return True
+        # return False
+
+        if self.case_menace(roi.position[0], roi.position[1], roi):  # on regarde si la position du roi est menace
+            return True
         return False
 
     def est_en_eche_et_mat(self,

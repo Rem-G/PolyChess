@@ -38,6 +38,7 @@ def init_pieces(configuration):
 
     configuration.add_piece(Dame("D", [9, 4]))
 
+
     roiB = Roi("R", [9, 5])
     configuration.add_piece(roiB)
     configuration.init_roi(roiB)
