@@ -92,8 +92,11 @@ class GeneralConf():
                     self.add_piece(roi)
                     self.init_roi(roi)
 
-            self.died_pieces_B =[e[1:len(e)-1] for e in elements[len(elements) - 5][1:len(elements[len(elements) - 5])-1].split(',')]#Récupération des pièces blanches mangées et mise en page de celles-ci sous forme de liste composée des noms des pièces
-            self.died_pieces_N = [e[1:len(e)-1] for e in elements[len(elements) - 4][1:len(elements[len(elements) - 4])-1].split(',')]
+            self.died_pieces_B = [e[1:len(e) - 1] for e in
+                                  elements[len(elements) - 5][1:len(elements[len(elements) - 5]) - 1].split(
+                                      ',')]  # Récupération des pièces blanches mangées et mise en page de celles-ci sous forme de liste composée des noms des pièces
+            self.died_pieces_N = [e[1:len(e) - 1] for e in
+                                  elements[len(elements) - 4][1:len(elements[len(elements) - 4]) - 1].split(',')]
 
             self.joueurB.couleur = elements[len(elements) - 3][2]
             self.joueurB.points = int(elements[len(elements) - 3][6])
@@ -188,23 +191,10 @@ class GeneralConf():
         pieces_mangees_B = '            Pieces blanches mangées ' + str(self.died_pieces_B)
         pieces_mangees_N = '            Pieces noires mangées ' + str(self.died_pieces_N)
 
-        matrice_screen[len(matrice_screen)-5].append(pieces_mangees_B)
-        matrice_screen[len(matrice_screen)-4].append(pieces_mangees_N)
+        matrice_screen[len(matrice_screen) - 5].append(pieces_mangees_B)
+        matrice_screen[len(matrice_screen) - 4].append(pieces_mangees_N)
 
         return matrice_screen
-
-
-    def chemin_parcouru_piece(self, piece):
-        """
-        @RG
-        """
-        #Sauf Cavalier et Roi
-        pass
-        #if piece.__class__ is Cavalier:
-            #for p in self.pieces:
-                #if p.position in piece[0]:
-                   #piece[0].pop(p.position)
-
 
     def verification_deplacement(self, moves, pos_arrivee):
         """
@@ -229,23 +219,19 @@ class GeneralConf():
                 return True
         return False
 
-
     def mange_piece(self, piece, possible_eat, pos_arrivee):
         """
         @RG @NR
         """
         for p in self.pieces:
             # Supprime une pièce adverse si la position d'arrivée voulue correspond à l'emplacement d'une pièce adverse
-            if pos_arrivee == p.position and not(self.sameTeam(p, piece)) and pos_arrivee in possible_eat:
+            if pos_arrivee == p.position and not (self.sameTeam(p, piece)) and pos_arrivee in possible_eat:
                 if p.nom.islower():
                     self.joueurB.add_point(p)
                 else:
                     self.joueurN.add_point(p)
                 self.del_piece(p)
                 piece.set_piece_position(pos_arrivee)
-
-
-
 
     def tour_joueur(self, piece, pos_arrivee):
         """
@@ -300,8 +286,6 @@ class GeneralConf():
             else:
                 self.add_msg_error("Déplacement interdit")
 
-        # NOTE : faire un verfification deplacement pour le pion
-
         if piece.__class__ is Pion:
             if self.verification_deplacement_pion(piece, piece.PossibleMoves(), pos_arrivee):
                 if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
@@ -322,18 +306,6 @@ class GeneralConf():
             else:
                 self.add_msg_error("Déplacement interdit")
 
-        # if (piece.__class__ != Roi) and (piece.__class__ != Tour) and (piece.__class__ != Fou) and(piece.__class__ != Dame) and((piece.__class__ != Pion)):
-        #     print("cavalier")
-        #     if self.verification_deplacement(piece.PossibleMoves(), pos_arrivee):
-        #         print("1")
-        #         if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
-        #             self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
-        #         else:
-        #             piece.set_piece_position(pos_arrivee)
-        #
-        #     else:
-        #         self.add_msg_error("Déplacement interdit")
-
     def deplacement_piece(self, pos_depart, pos_arrivee, upper):
         """
         @RG
@@ -348,10 +320,6 @@ class GeneralConf():
         if self.board.valeur_position_piece_mat(pos_depart) != -1 and self.board.valeur_position_piece_mat(
                 pos_arrivee) != -1:
             for piece in self.pieces:
-                ###########
-                if piece.__class__ is Cavalier:
-                    self.chemin_parcouru_piece(piece)
-                ###########
                 # Récupération et conversion des coordonnées utilisateur de la pièce en coordonnées de la matrice de jeu
                 piece_x, piece_y = piece.get_piece_position()[0], piece.get_piece_position()[1]
                 coordonnees_pieces.append([piece_x, piece_y])
@@ -444,26 +412,16 @@ class GeneralConf():
                 # l'on veut se déplacer il y a déja un piece allié, on l'èleve de la liste
                 possible_moves.remove(piece.position)
         # pas de probleme si l'emplacement est vide ou il y a un ennemi
-        # erbo pour voir si sur ce coup le roi se met en echec
-
-        # emplacements_reachable_by_opponent = list()  # emplacement que les ennemis peuvent atteindre
-        # for piece in self.pieces:
-        #     if not (self.sameTeam(piece, roi)):  # si la piece courante n'est pas dans la meme equipe que le roi
-        #         for erbo in piece.PossibleMoves()[1]:  # emplacement de capture de la piece enemie
-        #             if erbo not in emplacements_reachable_by_opponent:  # Pour ne pas avoir de doublon
-        #                 emplacements_reachable_by_opponent.append(
-        #                     erbo)  # on ajoute les emplacements de capture de chaque piece
-
-        # emplacements_reachable_by_opponent = self.emplacements_reachable_by_opponent(roi)
 
         if (pos_arrivee in possible_moves) and not (self.case_menace(pos_arrivee[0], pos_arrivee[1],
-                                                                     roi)):  # and (pos_arrivee not in emplacements_reachable_by_opponent)
+                                                                     roi)):
             # verification si la position d'arrivee est dans les moves possibles et qu'il n'y pas de piece à cette emplacement ou que on peut manger une piece a cet emplacement
             # et que dans les deux cas la position d'arrivee ne soit pas un emplacement que pourrait prendre l'ennemi
             if self.board.matrice_jeu()[pos_arrivee[0]][pos_arrivee[1]] != -1:
                 # Vérification si la position d'arrivée voulue est sur le plateau de jeu
                 return True
         return False
+
 
     def verification_deplacement_tour(self, tour, moves, pos_arrivee):
         """
@@ -483,35 +441,42 @@ class GeneralConf():
         # faut aussi le gerer pour le roi OK
 
         for piece in self.pieces:
-            if piece.position == pos_arrivee and self.sameTeam(piece, tour): #on verfie si la case ou lon veut se deplacer n'est pas occupe par un allie
+            if piece.position == pos_arrivee and self.sameTeam(piece,
+                                                               tour):  # on verfie si la case ou lon veut se deplacer n'est pas occupe par un allie
                 return False
 
         # modification des moves en prenant en compte l'etat de l'echiquier (postion des pieces)
-        if tour.position[0] == pos_arrivee[0] and tour.position[1]<pos_arrivee[1]: #même ligne, parcours de gauche vers la droite
-            for posCol in range(tour.position[1] +1,pos_arrivee[1] ):
-                if self.case_occupe(tour.position[0], posCol): #on regarde si les cases entre la tour et la pos arrivee son occupes
+        if tour.position[0] == pos_arrivee[0] and tour.position[1] < pos_arrivee[
+            1]:  # même ligne, parcours de gauche vers la droite
+            for posCol in range(tour.position[1] + 1, pos_arrivee[1]):
+                if self.case_occupe(tour.position[0],
+                                    posCol):  # on regarde si les cases entre la tour et la pos arrivee son occupes
                     return False
             return True
 
-        if tour.position[0] == pos_arrivee[0] and tour.position[1] > pos_arrivee[1]:  # même ligne, parcours de droite vers la gauche
-            for posCol in range(tour.position[1]-1, pos_arrivee[1], -1):
-                if self.case_occupe(tour.position[0],posCol):  # on regarde si les cases entre la tour et la pos arrivee son occupes
+        if tour.position[0] == pos_arrivee[0] and tour.position[1] > pos_arrivee[
+            1]:  # même ligne, parcours de droite vers la gauche
+            for posCol in range(tour.position[1] - 1, pos_arrivee[1], -1):
+                if self.case_occupe(tour.position[0],
+                                    posCol):  # on regarde si les cases entre la tour et la pos arrivee son occupes
                     return False
             return True
 
-        if tour.position[1] == pos_arrivee[1] and tour.position[0]<pos_arrivee[0]: #meme colonne, parcours du haut vers le bas
-            for posLine in range(tour.position[0]+1, pos_arrivee[0]):
+        if tour.position[1] == pos_arrivee[1] and tour.position[0] < pos_arrivee[
+            0]:  # meme colonne, parcours du haut vers le bas
+            for posLine in range(tour.position[0] + 1, pos_arrivee[0]):
                 if self.case_occupe(posLine, tour.position[1]):
                     return False
             return True
 
-        if tour.position[1] == pos_arrivee[1] and tour.position[0]>pos_arrivee[0]: #meme colonne, parcours du bas vers le haut
-            for posLine in range(tour.position[0]-1, pos_arrivee[0],-1):
+        if tour.position[1] == pos_arrivee[1] and tour.position[0] > pos_arrivee[
+            0]:  # meme colonne, parcours du bas vers le haut
+            for posLine in range(tour.position[0] - 1, pos_arrivee[0], -1):
                 if self.case_occupe(posLine, tour.position[1]):
                     return False
             return True
 
-        return False # car pos arrivee n'est pas dans les PossibleMoves (sur meme ligne ou meme colonne)
+        return False  # car pos arrivee n'est pas dans les PossibleMoves (sur meme ligne ou meme colonne)
 
     def verification_deplacement_fou(self, fou, moves, pos_arrivee):
         """
@@ -533,55 +498,60 @@ class GeneralConf():
                                                                fou):  # on verfie si la case ou lon veut se deplacer n'est pas occupe par un allie
                 return False
 
-        if not(pos_arrivee in possible_moves):
+        if not (pos_arrivee in possible_moves):
             return False
 
-        posLine = fou.position[0] #y de loic
-        posCol = fou.position[1] #x de loic
+        posLine = fou.position[0]
+        posCol = fou.position[1]
 
         # modification des moves en prenant en compte l'etat de l'echiquier (postion des pieces)
 
-        if fou.position[0] > pos_arrivee[0] and fou.position[1] > pos_arrivee[1]: #on parcours de droite a gauche et du bas vers le haut (diagonale)
-            posCol = posCol - 1 #on commence apres et on s'arrete avant comme boucle for dans verification deplacement tour
+        if fou.position[0] > pos_arrivee[0] and fou.position[1] > pos_arrivee[
+            1]:  # on parcours de droite a gauche et du bas vers le haut (diagonale)
+            posCol = posCol - 1  # on commence apres et on s'arrete avant comme boucle for dans verification deplacement tour
             posLine = posLine - 1
-            while (posLine >= pos_arrivee[0]+1) and (posCol >= pos_arrivee[1]+1):
-                if posLine<1 or posCol<1 or self.case_occupe(posLine, posCol): #on verifie si on sort de lechiquier
+            while (posLine >= pos_arrivee[0] + 1) and (posCol >= pos_arrivee[1] + 1):
+                if posLine < 1 or posCol < 1 or self.case_occupe(posLine,
+                                                                 posCol):  # on verifie si on sort de lechiquier
                     return False
                 posCol = posCol - 1  # bizarre incrementation
                 posLine = posLine - 1
             return True
 
-        if fou.position[0] > pos_arrivee[0] and fou.position[1] < pos_arrivee[1]: #on parcours  de gauche a droite et du bas vers le haut (diagonale)
+        if fou.position[0] > pos_arrivee[0] and fou.position[1] < pos_arrivee[
+            1]:  # on parcours  de gauche a droite et du bas vers le haut (diagonale)
             posCol = posCol + 1
             posLine = posLine - 1
-            while (posLine >= pos_arrivee[0]+1) and (posCol <= pos_arrivee[1]-1):
-                if posLine<1 or posCol >8 or self.case_occupe(posLine, posCol):
+            while (posLine >= pos_arrivee[0] + 1) and (posCol <= pos_arrivee[1] - 1):
+                if posLine < 1 or posCol > 8 or self.case_occupe(posLine, posCol):
                     return False
                 posCol = posCol + 1
                 posLine = posLine - 1
             return True
 
-        if fou.position[0] < pos_arrivee[0] and fou.position[1] > pos_arrivee[1]: #on parcours de droite a gauche et du haut vers le bas (diagonale)
+        if fou.position[0] < pos_arrivee[0] and fou.position[1] > pos_arrivee[
+            1]:  # on parcours de droite a gauche et du haut vers le bas (diagonale)
             posCol = posCol - 1
             posLine = posLine + 1
-            while (posLine <= pos_arrivee[0]-1) and (posCol >= pos_arrivee[1]+1):
-                if posLine>9 or posCol<1 or self.case_occupe(posLine, posCol):
+            while (posLine <= pos_arrivee[0] - 1) and (posCol >= pos_arrivee[1] + 1):
+                if posLine > 9 or posCol < 1 or self.case_occupe(posLine, posCol):
                     return False
                 posCol = posCol - 1
                 posLine = posLine + 1
             return True
 
-        if fou.position[0] < pos_arrivee[0] and fou.position[1] < pos_arrivee[1]: #on parcours  de gauche a droite et du haut vers le bas (diagonale)
+        if fou.position[0] < pos_arrivee[0] and fou.position[1] < pos_arrivee[
+            1]:  # on parcours  de gauche a droite et du haut vers le bas (diagonale)
             posCol = posCol + 1
             posLine = posLine + 1
-            while (posLine <= pos_arrivee[0]-1) and (posCol <= pos_arrivee[1]-1):
-                if posCol>8 or posLine >9 or self.case_occupe(posLine, posCol):
+            while (posLine <= pos_arrivee[0] - 1) and (posCol <= pos_arrivee[1] - 1):
+                if posCol > 8 or posLine > 9 or self.case_occupe(posLine, posCol):
                     return False
-                posCol = posCol+1
-                posLine = posLine+1
+                posCol = posCol + 1
+                posLine = posLine + 1
             return True
 
-        return False #pos_arrivee n'est pas sur une diagonale
+        return False  # pos_arrivee n'est pas sur une diagonale
 
     def verification_deplacement_dame(self, dame, moves, pos_arrivee):
         """
@@ -592,7 +562,9 @@ class GeneralConf():
         :param pos_arrivee: Destination voulue par le joueur pour la dame
         :return bool : renvoie vrai si le deplacement est possible et faux sinon
         """
-        if self.verification_deplacement_tour(dame,moves, pos_arrivee) or self.verification_deplacement_fou(dame,moves, pos_arrivee):
+        if self.verification_deplacement_tour(dame, moves, pos_arrivee) or self.verification_deplacement_fou(dame,
+                                                                                                             moves,
+                                                                                                             pos_arrivee):
             return True
         return False
 
@@ -608,23 +580,24 @@ class GeneralConf():
         possible_moves = moves[0]
         possible_eat = moves[1]
 
-        if pos_arrivee in possible_eat: #pour verifier l'attaque, on verifie si la position d'arrivee est dans les attaques du pion et si la position arrivee est occup par une piece enemi
+        if pos_arrivee in possible_eat:  # pour verifier l'attaque, on verifie si la position d'arrivee est dans les attaques du pion et si la position arrivee est occup par une piece enemi
             if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
                 for piece in self.pieces:
-                    if piece.position == pos_arrivee and not(self.sameTeam(piece, pion)):
+                    if piece.position == pos_arrivee and not (self.sameTeam(piece, pion)):
                         return True
             return False
 
-        if pos_arrivee in possible_moves or (pos_arrivee in possible_eat): #on ne fait pas l'attaque ici mais dans la fonction mange_piece
+        if pos_arrivee in possible_moves or (
+                pos_arrivee in possible_eat):  # on ne fait pas l'attaque ici mais dans la fonction mange_piece
 
-            if pion.position[0]<pos_arrivee[0]:
-                for posLine in (pion.position[0]+1, pos_arrivee[0]): #parours du haut vers le bas
+            if pion.position[0] < pos_arrivee[0]:
+                for posLine in (pion.position[0] + 1, pos_arrivee[0]):  # parours du haut vers le bas
                     if self.case_occupe(posLine, pion.position[1]):
                         return False
                 return True
-            if pion.position[0]>pos_arrivee[0]:
-                for posLine in (pion.position[0]-1, pos_arrivee[0],-1):
-                    if self.case_occupe(posLine, pion.position[1]): #parcrous du bas vers le heut
+            if pion.position[0] > pos_arrivee[0]:
+                for posLine in (pion.position[0] - 1, pos_arrivee[0], -1):
+                    if self.case_occupe(posLine, pion.position[1]):  # parcrous du bas vers le heut
                         return False
                 return True
         return False
@@ -643,7 +616,8 @@ class GeneralConf():
         if pos_arrivee in possible_moves:
             if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
                 for piece in self.pieces:
-                    if piece.position == pos_arrivee and self.sameTeam(piece, cavalier): #mouvement n'est pas possible si la pos arrivee est occupe par une piece allie
+                    if piece.position == pos_arrivee and self.sameTeam(piece,
+                                                                       cavalier):  # mouvement n'est pas possible si la pos arrivee est occupe par une piece allie
                         return False
             return True
         return False
@@ -663,13 +637,14 @@ class GeneralConf():
         for tour in tour_allie:
             if tour.position == pos_arrivee:
                 if tour.firstMove():
-                    for posCol in range(roi.get_piece_position()[1]+1, tour.get_piece_position()[1]):  # on parcours
+                    for posCol in range(roi.get_piece_position()[1] + 1, tour.get_piece_position()[1]):  # on parcours
                         # l'echiquier sur l'horizontale entre les 2 pieces (de gauche à droite)
-                        if  self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol, roi):  # on
+                        if self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol,
+                                                                                         roi):  # on
                             # ne peut pas faire le roque, si les cases entre le roi et la tour sont occupees ou menacees.
                             return False
-                    #ou
-                    for posCol in range(tour.get_piece_position()[1]+1, roi.get_piece_position()[1]):  # on parcours
+                    # ou
+                    for posCol in range(tour.get_piece_position()[1] + 1, roi.get_piece_position()[1]):  # on parcours
                         # l'echiquier sur l'horizontale entre les 2 pieces (de doite à gauche)
                         if self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol, roi):
                             return False
@@ -678,7 +653,6 @@ class GeneralConf():
                     col_roi = roi.get_piece_position()[1]
                     line_tour = tour.get_piece_position()[0]
                     col_tour = tour.get_piece_position()[1]
-
 
                     if col_roi < col_tour:  # petit roque
                         col_roi = col_roi + 2
@@ -731,13 +705,6 @@ class GeneralConf():
         else:
             roi = self.joueurN.roi
 
-        # for piece in self.pieces:
-        #     #if piece.__class__ is Roi and not piece.nom == 'R'
-        #     if not(self.sameTeam(piece, roi)): ## normalement a enlever piece.__class__ is Roi car on ne regarde pas que pour le roi mais tous les autres types de pieces
-        #         if roi.position in piece.PossibleMoves()[1]: #Attention probleme avec possiblesMoves de la reine, et la tour, c'est pour ca que je mis le roi ennemi
-        #             return True
-        # return False
-
         if self.case_menace(roi.position[0], roi.position[1], roi):  # on regarde si la position du roi est menace
             return True
         return False
@@ -764,49 +731,51 @@ class GeneralConf():
             # Pour cela on test pour chaque piece, tout les coups possibles et on regarde si apres le roi n'est plus en echec
             for piece in self.pieces:
                 if (piece is not roi) and (self.sameTeam(piece, roi)):
-                    for move_allie in piece.PossibleMoves()[1]:
-                        if self.verification_deplacement(piece.PossibleMoves(), move_allie):
+                    for move_allie in piece.PossibleMoves()[1]:  # PossibleMoves()[1] : les attaques de la piece
+                        if self.verification_deplacement_new(piece, piece.PossibleMoves(),
+                                                             move_allie):  # on regarde si le deplacement est possible
                             # il faut maintenant tester: si on fait le coup, le roi est sauve ou pas
-                            liste_pseudo_echiquier = self.pseudo_mange_piece(piece, piece.PossibleMoves()[1],
-                                                                             move_allie)
+                            liste_simul_echiquier = self.simul_mange_piece(piece, piece.PossibleMoves()[1],
+                                                                           move_allie)
                             if not (self.est_en_echec(joueur)):
-                                piece.set_piece_position(liste_pseudo_echiquier[
+                                piece.set_piece_position(liste_simul_echiquier[
                                                              0].position)  # on remet l'ancienne position de la piece (l'ancienne configuration)
-                                if liste_pseudo_echiquier[1] is not None:
-                                    self.add_piece(liste_pseudo_echiquier[
+                                if liste_simul_echiquier[1] is not None:
+                                    self.add_piece(liste_simul_echiquier[
                                                        1])  # on rajoute la piece que l'on vient de supprimer, comme si il n'y avait pas eu de coup
                                 return False
                             # on remet l'etat precedent de l'echiquier
                             piece.set_piece_position(
-                                liste_pseudo_echiquier[0].position)  # on remet l'ancienne position de la piece
-                            if liste_pseudo_echiquier[1] is not None:
-                                self.add_piece(liste_pseudo_echiquier[
+                                liste_simul_echiquier[0].position)  # on remet l'ancienne position de la piece
+                            if liste_simul_echiquier[1] is not None:
+                                self.add_piece(liste_simul_echiquier[
                                                    1])  # on rajoute la piece que l'on vient de supprimer, comme si il n'y avait pas eu de coup
             return True  # si il n'y pas de solution, on est en echec et mat
         return False
 
-    def pseudo_mange_piece(self, piece, possible_eat, pos_arrivee):
+    def simul_mange_piece(self, piece, possible_eat, pos_arrivee):
         """
-        pseudo bouge la piece a une nouvelle position
+        simule le deplacement de la piece a une nouvelle position
         :param piece: une piece
-        :param possible_eat: emplacement ou la piece peut bouger
+        :param possible_eat: emplacement ou la piece peut attaquer
         :param pos_arrivee: emplacement ou la piece veut aller
         :return: une liste composé de la piece pseudo bouge et de la piece pseudo mange s'il y a
         """
 
-        piece_pseudo_mange = None
+        simul_piece_mange = None
         for p in self.pieces:
             # Supprime une pièce adverse si la position d'arrivée voulue correspond à l'emplacement d'une pièce adverse
-            if pos_arrivee == p.position and pos_arrivee in possible_eat:
-                piece_pseudo_mange = p
+            if not (self.sameTeam(p, piece)) and pos_arrivee == p.position and pos_arrivee in possible_eat:
+                simul_piece_mange = p
                 self.del_piece(p)
 
-        piece_pseudo_bouge = piece
+        simul_piece_bouge = piece
         piece.set_piece_position(pos_arrivee)
 
-        return [piece_pseudo_bouge, piece_pseudo_mange]
+        return [simul_piece_bouge, simul_piece_mange]
 
-    def pat(self, joueur): # c'est a dire le roi du joueur n'est pas en echec mais il ne peut plus jouer de coup sans mettre son roi en echec
+    def pat(self,
+            joueur):  # c'est a dire le roi du joueur n'est pas en echec mais il ne peut plus jouer de coup sans mettre son roi en echec
         """
         verifie si nous avons un pat
         :param joueur: INT 1 si joueur blanc sinon joueur noir
@@ -817,7 +786,7 @@ class GeneralConf():
         else:
             roi = self.joueurN.roi
 
-        if not(self.est_en_echec(joueur)):
+        if not (self.est_en_echec(joueur)):
             # on test si le roi peut bouger
             for move_arrive in roi.PossibleMoves()[1]:
                 if self.verification_deplacement_roi(roi, roi.PossibleMoves(),
@@ -830,33 +799,27 @@ class GeneralConf():
                     for move_allie in piece.PossibleMoves()[1]:
                         if self.verification_deplacement(piece.PossibleMoves(), move_allie):
                             # il faut maintenant tester: si on fait le coup, le roi est sauve ou pas
-                            liste_pseudo_echiquier = self.pseudo_mange_piece(piece, piece.PossibleMoves()[1],
-                                                                             move_allie)
+                            liste_simul_echiquier = self.simul_mange_piece(piece, piece.PossibleMoves()[1],
+                                                                           move_allie)
                             if not (self.est_en_echec(joueur)):
-                                piece.set_piece_position(liste_pseudo_echiquier[
+                                piece.set_piece_position(liste_simul_echiquier[
                                                              0].position)  # on remet l'ancienne position de la piece (l'ancienne configuration)
-                                if liste_pseudo_echiquier[1] is not None:
-                                    self.add_piece(liste_pseudo_echiquier[
+                                if liste_simul_echiquier[1] is not None:
+                                    self.add_piece(liste_simul_echiquier[
                                                        1])  # on rajoute la piece que l'on vient de supprimer, comme si il n'y avait pas eu de coup
                                 return False
                             # on remet l'etat precedent de l'echiquier
                             piece.set_piece_position(
-                                liste_pseudo_echiquier[0].position)  # on remet l'ancienne position de la piece
-                            if liste_pseudo_echiquier[1] is not None:
-                                self.add_piece(liste_pseudo_echiquier[
+                                liste_simul_echiquier[0].position)  # on remet l'ancienne position de la piece
+                            if liste_simul_echiquier[1] is not None:
+                                self.add_piece(liste_simul_echiquier[
                                                    1])  # on rajoute la piece que l'on vient de supprimer, comme si il n'y avait pas eu de coup
             return True  # si il n'y pas de solution, on est en echec et mat
         return False
 
-
-
-#######################################################################################################################
-### FONTION POUR DEBUGGAGE  ##### @NR
-#######################################################################################################################
-
-###############################################################
-###FONCTIONS PION @TC
-###############################################################
+    ###############################################################
+    ###FONCTIONS PION @TC
+    ###############################################################
 
     def promotion(self, piece):
         """
