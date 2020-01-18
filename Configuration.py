@@ -221,7 +221,10 @@ class GeneralConf():
 
     def mange_piece(self, piece, possible_eat, pos_arrivee):
         """
-        @RG @NR
+        @RG @NR mange une piece
+        :param piece: une piece
+        :param possible_eat: les deplacement d'attaque de la piece
+        :param pos_arrivee: Position d'arrivée désirée par le joueur pour la pièce
         """
         for p in self.pieces:
             # Supprime une pièce adverse si la position d'arrivée voulue correspond à l'emplacement d'une pièce adverse
@@ -436,9 +439,7 @@ class GeneralConf():
         # pas de list possible_eat car c'est la même chose que possible moves pour le tour
 
         # NOTE : on ne verifie pas si pos_arrivee est dans les possibles moves car les if le font indirectement,
-        # si pos arrivee est sur la même ligne ou sur la même colonne alors pos_arrivee est dans les PossibleMoves il
-        # faut aussi gerer que la tour ne mange pas une piece allie OK
-        # faut aussi le gerer pour le roi OK
+        # si pos_arrivee est sur la même ligne ou sur la même colonne alors pos_arrivee est dans les PossibleMoves
 
         for piece in self.pieces:
             if piece.position == pos_arrivee and self.sameTeam(piece,
@@ -495,7 +496,7 @@ class GeneralConf():
 
         for piece in self.pieces:
             if piece.position == pos_arrivee and self.sameTeam(piece,
-                                                               fou):  # on verfie si la case ou lon veut se deplacer n'est pas occupe par un allie
+                                                               fou):  # on verfie si la case ou l'on veut se deplacer n'est pas occupe par un allie
                 return False
 
         if not (pos_arrivee in possible_moves):
@@ -508,7 +509,7 @@ class GeneralConf():
 
         if fou.position[0] > pos_arrivee[0] and fou.position[1] > pos_arrivee[
             1]:  # on parcours de droite a gauche et du bas vers le haut (diagonale)
-            posCol = posCol - 1  # on commence apres et on s'arrete avant comme boucle for dans verification deplacement tour
+            posCol = posCol - 1  # on commence apres et on s'arrete avant comme la boucle for dans verification deplacement tour
             posLine = posLine - 1
             while (posLine >= pos_arrivee[0] + 1) and (posCol >= pos_arrivee[1] + 1):
                 if posLine < 1 or posCol < 1 or self.case_occupe(posLine,
@@ -633,7 +634,7 @@ class GeneralConf():
         tour_allie = list()  # tour_allie : list des tours de tour allie
         for piece1 in self.pieces:
             if piece1.__class__ is Tour and self.sameTeam(roi, piece1):
-                tour_allie.append(piece1)
+                tour_allie.append(piece1) #on fait une liste de tour allie pour ne pas devoir a le chercher a chaque fois
         for tour in tour_allie:
             if tour.position == pos_arrivee:
                 if tour.firstMove():
@@ -643,7 +644,7 @@ class GeneralConf():
                                                                                          roi):  # on
                             # ne peut pas faire le roque, si les cases entre le roi et la tour sont occupees ou menacees.
                             return False
-                    # ou
+                    # ou (uniquement une des deux boucles for est executee)
                     for posCol in range(tour.get_piece_position()[1] + 1, roi.get_piece_position()[1]):  # on parcours
                         # l'echiquier sur l'horizontale entre les 2 pieces (de doite à gauche)
                         if self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol, roi):
@@ -657,7 +658,7 @@ class GeneralConf():
                     if col_roi < col_tour:  # petit roque
                         col_roi = col_roi + 2
                         col_tour = col_tour - 2
-                    else:  # grand roque
+                    else:                   # grand roque
                         col_roi = col_roi - 2
                         col_tour = col_tour + 3
 
@@ -716,22 +717,28 @@ class GeneralConf():
         :param joueur:  INT 1 si joueur blanc sinon joueur noir
         :return: True si le joueur est en echec et mat, False sinon
         """
+
+        #NOTE: le roi est en echec et mac s'il est en echec et qu'au coup suivant il est encore en echec
+        #pour cela, on simule les coups possibles de chaque piece del'equipe pour voir si un des coups arrive a proteger le roi
+        #Comment? pour chaque coup de chaque piece, le programe regarde si le roi est protege ou pas et dans les deux cas, il remet l'etat initial de l'echiquier
+        #si dans la simulation, une piece est mange, le programme la remet a sa derniere position et si une piece a bouge, il la remet aussi a sa derniere position
+
         if joueur == 1:
             roi = self.joueurB.roi
         else:
             roi = self.joueurN.roi
 
         if self.est_en_echec(joueur):
-            # on test si le roi peut bouger
+            # on test si le roi peut se proteger lui meme
             for move_arrive in roi.PossibleMoves()[1]:
                 if self.verification_deplacement_roi(roi, roi.PossibleMoves(),
                                                      move_arrive):  ### verfie si pour chaque coup du roi, il ne se met pas en echec
                     return False
-            # il faut aussi verfier si une piece allie peut le sauver
+            # on verfie si une piece allie peut proteger le roi
             # Pour cela on test pour chaque piece, tout les coups possibles et on regarde si apres le roi n'est plus en echec
             for piece in self.pieces:
                 if (piece is not roi) and (self.sameTeam(piece, roi)):
-                    for move_allie in piece.PossibleMoves()[1]:  # PossibleMoves()[1] : les attaques de la piece
+                    for move_allie in piece.PossibleMoves()[1]:  # RAPPEL: PossibleMoves()[1] -> les attaques de la piece
                         if self.verification_deplacement_new(piece, piece.PossibleMoves(),
                                                              move_allie):  # on regarde si le deplacement est possible
                             # il faut maintenant tester: si on fait le coup, le roi est sauve ou pas
@@ -772,7 +779,8 @@ class GeneralConf():
         simul_piece_bouge = piece
         piece.set_piece_position(pos_arrivee)
 
-        return [simul_piece_bouge, simul_piece_mange]
+        return [simul_piece_bouge, simul_piece_mange] #simul_piece_bouge est la piece qui a bouge et dont la position est celle avant le coup
+                                                      #simul_piece_mange est la piece qui est mange dans la simulation
 
     def pat(self,
             joueur):  # c'est a dire le roi du joueur n'est pas en echec mais il ne peut plus jouer de coup sans mettre son roi en echec
