@@ -30,7 +30,7 @@ class GeneralConf():
         self.died_pieces_B = list()
         self.died_pieces_N = list()
         self.in_promotion = False
-
+        self.dernierCoup = list()
     def sauvegarde_partie(self, joueur):
         """
         @RG
@@ -144,12 +144,13 @@ class GeneralConf():
 
     def pieces_joueurs(self):
         """
+   
         """
         for piece in self.pieces:
             if piece.nom.isupper():
-                self.pieces_joueurB.append(piece)  # NR il a oublié les self
+                self.pieces_joueurB.append(piece)  
             else:
-                self.pieces_joueurN.append(piece)  # NR il a oublié les self
+                self.pieces_joueurN.append(piece)  
 
     def matrice_affichage(self):
         """
@@ -293,9 +294,17 @@ class GeneralConf():
                     # Vérification de la position actuelle de la pièce et de la position de départ demandée par l'utilisateur
                     if upper is True:
                         # Tour du joueur blanc
+                        
                         if piece.nom.isupper():
+                            if self.enPassant()[0] == True and pos_depart == self.enPassant()[1].position and pos_arrivee == self.enPassant()[3]:
+                                encours = self.enPassant()
+                                encours[1].set_piece_position(encours[3])
+                                self.del_piece(encours[2])
+                                encours = list()
                             # Vérification nom piece, affiche un message d'erreur si ce déplacement est interdit
-                            self.tour_joueur(piece, pos_arrivee)
+                            else:
+                                self.tour_joueur(piece, pos_arrivee)
+                            self.dernierCoup = [pos_depart,pos_arrivee]
 
                         else:
                             self.add_msg_error("Cette pièce appartient à l'adversaire !")
@@ -303,9 +312,15 @@ class GeneralConf():
                     else:
                         # Tour du joueur noir
                         if piece.nom.islower():
+                            if self.enPassant()[0] == True and pos_depart == self.enPassant()[1].position and pos_arrivee == self.enPassant()[3]:
+                                encours = self.enPassant()
+                                encours[1].set_piece_position(encours[3])
+                                self.del_piece(encours[2])
+                                encours = list()
                             # Vérification nom piece, affiche un message d'erreur si ce déplacement est interdit
-                            self.tour_joueur(piece, pos_arrivee)
-
+                            else:
+                                self.tour_joueur(piece, pos_arrivee)
+                            self.dernierCoup = [pos_depart,pos_arrivee]
                         else:
                             self.add_msg_error("Cette pièce appartient à l'adversaire !")
 
@@ -567,3 +582,26 @@ class GeneralConf():
         elif nom_piece == 'D' or nom_piece == 'd':
             self.add_piece(Dame(nom_piece, position))
         self.in_promotion = False
+
+    def enPassant(self):
+        
+        """
+        Création de l'en passant
+        return: False si aucun en passant est disponible
+                true est les coordonnée des 2 pièces et la case de l'en passant
+        """
+        
+        for piece in self.pieces:
+            if piece.nom.isupper and piece.nom == 'P' and piece.position[0] == 5:
+                #Si le joueur est blanc est que le pion est sur la 5ème rangée et que la pièce est un pion
+                for piece1 in self.pieces:
+                    #On fait une nouvelle boucle sur les pieces pour voir si une pièce noir est à coté de la notre
+                    if piece1.nom == 'p' and piece1.position[0] == 5 and ((piece.position[1] + 1 == (piece1.position[1])) or (piece.position[1] -1 == (piece1.position[1]))) and self.dernierCoup[0][0] == 3:
+                        return([True,piece,piece1,[piece1.position[0]-1,piece1.position[1]]])
+                    
+            elif piece.nom.islower() and  piece.nom == 'p' and piece.position[0] == 6 :
+                 for piece2 in self.pieces:
+                    #On fait une nouvelle boucle sur les pieces pour voir si une pièce blanche est à coté de la notre
+                    if piece2.nom == 'P' and piece2.position[0] == 6 and (piece2.position[1] == piece.position[1] + 1 or piece2.position[1] == piece.position[1] - 1) and self.dernierCoup[0][0] == 8:
+                        return([True,piece,piece2,[piece2.position[0]+1,piece2.position[1]]])
+        return([False])
