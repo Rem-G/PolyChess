@@ -9,15 +9,19 @@ Ce projet a pour but la création d'un jeu d'échecs en python. Celui-ci propose
 Le jeu se joue dans un terminal de commandes.
 
 ## Fonctionnalités:
-[A venir]
+Les fonctionnalités disponible sont les suivantes :
+- **Un mode joueur contre joueur :** Ce mode de jeu permet de faire affronter deux joueurs entre eux. Les règles de base des echecs sont       implémentées (les deplacements disponibles, la mise en échec, échec et mat et le pat). Les coups spéciaux disponible au échecs sont implémentés, tel que le roque, l' en passant et la promotion. A tous moment de la partie les joueurs peuvent voir les pièces qu'ils ont mangé.
+- **Sauvegarde d'une partie :** Un joueur peut sauvgarder une partie pour la continuer plus tard.
+
 
 ## Pré-requis :
 Python 3.x
 
 ## Lancement du jeu
 Pour lancer le jeu, placez-vous dans le répertoire Polychess et lancez Main.py.
-Tour à tour les joueurs communiquent leurs intentions de jeu selon le format suivant : x1,y1 x2,y2
-x1,y1 représentant les coordonnées initiales de la pièce à déplacer et x2,y2 les coordonnées de la destination de la pièce.
+Tour à tour les joueurs communiquent leurs intentions de jeu selon le format suivant : x1y1 x2y2
+x1y1 représentant les coordonnées initiales de la pièce à déplacer et x2y2 les coordonnées de la destination de la pièce.
+**Exemple :** a2 a4
 
 ## Trello
 https://trello.com/b/GnWD5gmq/polychess
