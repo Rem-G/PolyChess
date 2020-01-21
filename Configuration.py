@@ -11,6 +11,8 @@ class Joueur():
         self.pieces_mangees = list()
         self.BOT = False
 
+
+
     def init_bot(self, configuration):
         """
         :param couleur:
@@ -18,6 +20,8 @@ class Joueur():
         :return:
         """
         self.BOT = Bot(self.couleur, configuration)
+
+
 
     def add_point(self, piece):
         """
@@ -29,6 +33,24 @@ class Joueur():
 
 
 class GeneralConf():
+# La classe GénéralConf est la plus volumineuse du programme 
+# elle est donc triée en plusieurs parties
+# Attention par la suite les lignes ne seront surment pas exactement les bonnes
+    
+# 1: Inisialisation de la classe        ~ligne n° 52
+# 2: Sauvegarde d'une partie            ~ligne n° 108 
+# 3: Fonctions préliminaires            ~ligne n° 182
+# 4: Fonctions de déplacement           ~ligne n° 282
+# 5: Fonctions pour le roi              ~ligne n° 724
+# 6: Fonctions pour les coups spéciaux  ~ligne n° 891
+    
+    
+    
+    
+    
+# =============================================================================
+#     Initialisation de la classe + création des constructeurs
+# =============================================================================
     def __init__(self):
         self.pieces = list()
         self.msg_error = list()
@@ -40,6 +62,51 @@ class GeneralConf():
         self.died_pieces_N = list()
         self.in_promotion = False
         self.dernierCoup = list()
+  
+    
+    
+    def add_piece(self, piece):
+        """
+        @RG
+        Ajoute une nouvelle pièce à la liste de pièces existantes
+        """
+        self.pieces.append(piece)
+
+
+
+    def del_piece(self, piece):
+        """
+        @RG
+        """
+        if piece.nom.isupper() and self.in_promotion is False:
+            self.died_pieces_B.append(piece.nom)
+        elif piece.nom.islower() and self.in_promotion is False:
+            self.died_pieces_N.append(piece.nom)
+        self.pieces.pop(self.pieces.index(piece))
+
+
+
+    def add_msg_error(self, msg):
+        """
+        @RG
+        """
+        if msg not in self.msg_error:
+            self.msg_error.append(msg)
+
+
+
+    def init_joueurs(self):
+        """
+        @RG
+        Crée les joueurs (couleur, points à 0)
+        """
+        self.joueurB = Joueur('B')
+        self.joueurN = Joueur('N')
+        
+        
+# =============================================================================
+#     Sauvegarde et chargement d'une partie    
+# =============================================================================
     def sauvegarde_partie(self, joueur):
         """
         @RG
@@ -57,6 +124,8 @@ class GeneralConf():
             file.write(str([self.joueurN.couleur, self.joueurN.points]) + '/')
 
             file.write(str(joueur))
+
+
 
     def charger_partie(self):
         """
@@ -106,37 +175,12 @@ class GeneralConf():
 
             self.joueur_sauvegarde = int(elements[len(elements) - 1])
 
-    def add_piece(self, piece):
-        """
-        @RG
-        Ajoute une nouvelle pièce à la liste de pièces existantes
-        """
-        self.pieces.append(piece)
 
-    def del_piece(self, piece):
-        """
-        @RG
-        """
-        if piece.nom.isupper() and self.in_promotion is False:
-            self.died_pieces_B.append(piece.nom)
-        elif piece.nom.islower() and self.in_promotion is False:
-            self.died_pieces_N.append(piece.nom)
-        self.pieces.pop(self.pieces.index(piece))
 
-    def add_msg_error(self, msg):
-        """
-        @RG
-        """
-        if msg not in self.msg_error:
-            self.msg_error.append(msg)
 
-    def init_joueurs(self):
-        """
-        @RG
-        Crée les joueurs (couleur, points à 0)
-        """
-        self.joueurB = Joueur('B')
-        self.joueurN = Joueur('N')
+# =============================================================================
+#   Fonctions préliminaires
+# =============================================================================
 
     def avantage_joueur(self):
         """
@@ -154,6 +198,8 @@ class GeneralConf():
 
         return self.avantage
 
+
+
     def pieces_joueurs(self):
         """
    
@@ -163,6 +209,8 @@ class GeneralConf():
                 self.pieces_joueurB.append(piece)  
             else:
                 self.pieces_joueurN.append(piece)  
+
+
 
     def matrice_affichage(self):
         """
@@ -196,7 +244,43 @@ class GeneralConf():
         matrice_screen[len(matrice_screen) - 4].append(pieces_mangees_N)
 
         return matrice_screen
-
+    
+    
+    
+        def sameTeam(self, piece1, piece2):
+        """ @NR
+        verifie si piece 1 et piece 2 sont dans le meme equipe
+        :param piece1 : une piece
+        :param piece2 : une piece
+        :return bool : renvoie vrai si piece 1 et piece 2 sont dans la meme equipe
+        """
+        if (piece1.nom.isupper() and piece2.nom.isupper()) or (piece1.nom.islower() and piece2.nom.islower()):
+            return True
+        return False
+    
+    
+    
+        def case_menace(self, posLine, posCol, piece):
+        """
+        @NR vérifier si la case est menace par ennemi
+        :param posLine:  position ligne INT
+        :param posCol: position colonne INT
+        :param piece: piece appartenant à l'équipe ami
+        :return: True si la case est menace, False sinon
+        """
+        pos_arrivee = [posLine, posCol]
+        for piece1 in self.pieces:
+            if not self.sameTeam(piece, piece1):
+                if self.verification_deplacement_new(piece1, piece1.PossibleMoves(),
+                                                     pos_arrivee):  # si la piece enemi peut se deplacer sur cette case alors la case est menace
+                    return True
+        return False
+    
+    
+# =============================================================================
+#   Les fonctions si dessous on pour rôle de vérifier les déplacements et 
+#   les actions associées aux pièces
+# =============================================================================
     def verification_deplacement(self, moves, pos_arrivee):
         """
         @RG
@@ -220,6 +304,8 @@ class GeneralConf():
                 return True
         return False
 
+
+
     def mange_piece(self, piece, possible_eat, pos_arrivee):
         """
         @RG @NR mange une piece
@@ -236,6 +322,8 @@ class GeneralConf():
                     self.joueurN.add_point(p)
                 self.del_piece(p)
                 piece.set_piece_position(pos_arrivee)
+
+
 
     def tour_joueur(self, piece, pos_arrivee):
         """
@@ -310,6 +398,8 @@ class GeneralConf():
             else:
                 self.add_msg_error("Déplacement interdit")
 
+
+
     def deplacement_piece(self, pos_depart, pos_arrivee, upper):
         """
         @RG
@@ -369,31 +459,9 @@ class GeneralConf():
         else:
             # Si le joueur entre des coordonnées en dehor du plateau de jeu
             self.add_msg_error("Merci de jouer sur le plateau")
-
-    ###############################################################
-    ###FONCTIONS pour ROI et pour le jeu @NR
-    ###############################################################
-    def init_roi(self, roi):
-        """
-        init le roi au joueur, on crée un nouvel attribut a la classe joueur (roi)
-        :param roi: piece roi
-        """
-        if roi.nom.isupper():
-            self.joueurB.roi = roi
-        else:
-            self.joueurN.roi = roi
-
-    def sameTeam(self, piece1, piece2):
-        """ @NR
-        verifie si piece 1 et piece 2 sont dans le meme equipe
-        :param piece1 : une piece
-        :param piece2 : une piece
-        :return bool : renvoie vrai si piece 1 et piece 2 sont dans la meme equipe
-        """
-        if (piece1.nom.isupper() and piece2.nom.isupper()) or (piece1.nom.islower() and piece2.nom.islower()):
-            return True
-        return False
-
+        
+        
+        
     def verification_deplacement_new(self, piece, moves, pos_arrivee):
         """
         @NR
@@ -411,7 +479,9 @@ class GeneralConf():
             return self.verification_deplacement_pion(piece, moves, pos_arrivee)
         if piece.__class__ is Cavalier:
             return self.verification_deplacement_cavalier(piece, moves, pos_arrivee)
-
+        
+        
+        
     def verification_deplacement_roi(self, roi, moves, pos_arrivee):  # OK marche
         """ @NR
         Verifie si le deplacement du roi est possible, sans l'emmener en echec
@@ -439,6 +509,7 @@ class GeneralConf():
                 # Vérification si la position d'arrivée voulue est sur le plateau de jeu
                 return True
         return False
+
 
 
     def verification_deplacement_tour(self, tour, moves, pos_arrivee):
@@ -493,6 +564,8 @@ class GeneralConf():
             return True
 
         return False  # car pos arrivee n'est pas dans les PossibleMoves (sur meme ligne ou meme colonne)
+
+
 
     def verification_deplacement_fou(self, fou, moves, pos_arrivee):
         """
@@ -569,6 +642,8 @@ class GeneralConf():
 
         return False  # pos_arrivee n'est pas sur une diagonale
 
+
+
     def verification_deplacement_dame(self, dame, moves, pos_arrivee):
         """
          @NR
@@ -583,6 +658,8 @@ class GeneralConf():
                                                                                                              pos_arrivee):
             return True
         return False
+
+
 
     def verification_deplacement_pion(self, pion, moves, pos_arrivee):
         """
@@ -618,6 +695,8 @@ class GeneralConf():
                 return True
         return False
 
+
+
     def verification_deplacement_cavalier(self, cavalier, moves, pos_arrivee):
         """
          @NR
@@ -637,50 +716,25 @@ class GeneralConf():
                         return False
             return True
         return False
+    
+    
+    
+    
+# =============================================================================
+# Les fonctions si dessous sont pour le roi (Mise en échecs / échecs et mat ...) 
+# =============================================================================
 
-    def roqueRoi(self, roi, pos_arrivee):
+    def init_roi(self, roi):
         """
-        @NR
-        applique le roque depuis le roi vers la tour
-        :param roi : une piece roi
-        :param pos_arrivee : la position d'arrivee, sur cette emplacement doit etre un roi ou une tour
-        :return bool: true si le roque reussi, false sinon
+        init le roi au joueur, on crée un nouvel attribut a la classe joueur (roi)
+        :param roi: piece roi
         """
-        tour_allie = list()  # tour_allie : list des tours de tour allie
-        for piece1 in self.pieces:
-            if piece1.__class__ is Tour and self.sameTeam(roi, piece1):
-                tour_allie.append(piece1) #on fait une liste de tour allie pour ne pas devoir a le chercher a chaque fois
-        for tour in tour_allie:
-            if tour.position == pos_arrivee:
-                if tour.firstMove():
-                    for posCol in range(roi.get_piece_position()[1] + 1, tour.get_piece_position()[1]):  # on parcours
-                        # l'echiquier sur l'horizontale entre les 2 pieces (de gauche à droite)
-                        if self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol,
-                                                                                         roi):  # on
-                            # ne peut pas faire le roque, si les cases entre le roi et la tour sont occupees ou menacees.
-                            return False
-                    # ou (uniquement une des deux boucles for est executee)
-                    for posCol in range(tour.get_piece_position()[1] + 1, roi.get_piece_position()[1]):  # on parcours
-                        # l'echiquier sur l'horizontale entre les 2 pieces (de doite à gauche)
-                        if self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol, roi):
-                            return False
-                    # on fait le roque avec une permutation
-                    line_roi = roi.get_piece_position()[0]
-                    col_roi = roi.get_piece_position()[1]
-                    line_tour = tour.get_piece_position()[0]
-                    col_tour = tour.get_piece_position()[1]
+        if roi.nom.isupper():
+            self.joueurB.roi = roi
+        else:
+            self.joueurN.roi = roi
 
-                    if col_roi < col_tour:  # petit roque
-                        col_roi = col_roi + 2
-                        col_tour = col_tour - 2
-                    else:                   # grand roque
-                        col_roi = col_roi - 2
-                        col_tour = col_tour + 3
 
-                    roi.set_piece_position([line_roi, col_roi])
-                    tour.set_piece_position([line_tour, col_tour])
-                    return True
-        return False
 
     def case_occupe(self, posLine, posCol):
         """
@@ -694,21 +748,7 @@ class GeneralConf():
                 return True
         return False
 
-    def case_menace(self, posLine, posCol, piece):
-        """
-        @NR vérifier si la case est menace par ennemi
-        :param posLine:  position ligne INT
-        :param posCol: position colonne INT
-        :param piece: piece appartenant à l'équipe ami
-        :return: True si la case est menace, False sinon
-        """
-        pos_arrivee = [posLine, posCol]
-        for piece1 in self.pieces:
-            if not self.sameTeam(piece, piece1):
-                if self.verification_deplacement_new(piece1, piece1.PossibleMoves(),
-                                                     pos_arrivee):  # si la piece enemi peut se deplacer sur cette case alors la case est menace
-                    return True
-        return False
+
 
     def est_en_echec(self, joueur):
         """
@@ -724,6 +764,8 @@ class GeneralConf():
         if self.case_menace(roi.position[0], roi.position[1], roi):  # on regarde si la position du roi est menace
             return True
         return False
+
+
 
     def est_en_eche_et_mat(self,
                            joueur):  # si le roi est en echec et en echec aussi au prochain coup et aucune parade ne peut-etre faite
@@ -775,6 +817,8 @@ class GeneralConf():
             return True  # si il n'y pas de solution, on est en echec et mat
         return False
 
+
+
     def simul_mange_piece(self, piece, possible_eat, pos_arrivee):
         """
         simule le deplacement de la piece a une nouvelle position
@@ -796,6 +840,9 @@ class GeneralConf():
 
         return [simul_piece_bouge, simul_piece_mange] #simul_piece_bouge est la piece qui a bouge et dont la position est celle avant le coup
                                                       #simul_piece_mange est la piece qui est mange dans la simulation
+
+
+
 
     def pat(self,
             joueur):  # c'est a dire le roi du joueur n'est pas en echec mais il ne peut plus jouer de coup sans mettre son roi en echec
@@ -840,9 +887,9 @@ class GeneralConf():
             return True  # si il n'y pas de solution, on est en echec et mat
         return False
 
-    ###############################################################
-    ###FONCTIONS PION @TC
-    ###############################################################
+# =============================================================================
+# Les coups spéciaux des échecs
+# =============================================================================
 
     def promotion(self, piece):
         """
@@ -872,6 +919,8 @@ class GeneralConf():
             self.add_piece(Dame(nom_piece, position))
         self.in_promotion = False
 
+
+
     def enPassant(self):
         
         """
@@ -894,3 +943,49 @@ class GeneralConf():
                     if piece2.nom == 'P' and piece2.position[0] == 6 and (piece2.position[1] == piece.position[1] + 1 or piece2.position[1] == piece.position[1] - 1) and self.dernierCoup[0][0] == 8:
                         return([True,piece,piece2,[piece2.position[0]+1,piece2.position[1]]])
         return([False])
+        
+        
+        
+    def roqueRoi(self, roi, pos_arrivee):
+        """
+        @NR
+        applique le roque depuis le roi vers la tour
+        :param roi : une piece roi
+        :param pos_arrivee : la position d'arrivee, sur cette emplacement doit etre un roi ou une tour
+        :return bool: true si le roque reussi, false sinon
+        """
+        tour_allie = list()  # tour_allie : list des tours de tour allie
+        for piece1 in self.pieces:
+            if piece1.__class__ is Tour and self.sameTeam(roi, piece1):
+                tour_allie.append(piece1) #on fait une liste de tour allie pour ne pas devoir a le chercher a chaque fois
+        for tour in tour_allie:
+            if tour.position == pos_arrivee:
+                if tour.firstMove():
+                    for posCol in range(roi.get_piece_position()[1] + 1, tour.get_piece_position()[1]):  # on parcours
+                        # l'echiquier sur l'horizontale entre les 2 pieces (de gauche à droite)
+                        if self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol,
+                                                                                         roi):  # on
+                            # ne peut pas faire le roque, si les cases entre le roi et la tour sont occupees ou menacees.
+                            return False
+                    # ou (uniquement une des deux boucles for est executee)
+                    for posCol in range(tour.get_piece_position()[1] + 1, roi.get_piece_position()[1]):  # on parcours
+                        # l'echiquier sur l'horizontale entre les 2 pieces (de doite à gauche)
+                        if self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol, roi):
+                            return False
+                    # on fait le roque avec une permutation
+                    line_roi = roi.get_piece_position()[0]
+                    col_roi = roi.get_piece_position()[1]
+                    line_tour = tour.get_piece_position()[0]
+                    col_tour = tour.get_piece_position()[1]
+
+                    if col_roi < col_tour:  # petit roque
+                        col_roi = col_roi + 2
+                        col_tour = col_tour - 2
+                    else:                   # grand roque
+                        col_roi = col_roi - 2
+                        col_tour = col_tour + 3
+
+                    roi.set_piece_position([line_roi, col_roi])
+                    tour.set_piece_position([line_tour, col_tour])
+                    return True
+        return False
