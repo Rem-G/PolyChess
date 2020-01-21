@@ -35,14 +35,11 @@ def init_pieces(configuration):
 
     configuration.add_piece(Fou("F", [9, 3]))
     configuration.add_piece(Fou("F", [9, 6]))
-<<<<<<< HEAD
-
-    configuration.add_piece(Dame("D", [9, 4]))
-=======
 
     configuration.add_piece(Dame("D", [9, 4]))
 
->>>>>>> 74e9dac688ac98dad92878bf8f3563463a5a3813
+    configuration.add_piece(Dame("D", [9, 4]))
+
 
     roiB = Roi("R", [9, 5])
     configuration.add_piece(roiB)
