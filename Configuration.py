@@ -247,7 +247,7 @@ class GeneralConf():
     
     
     
-        def sameTeam(self, piece1, piece2):
+    def sameTeam(self, piece1, piece2):
         """ @NR
         verifie si piece 1 et piece 2 sont dans le meme equipe
         :param piece1 : une piece
@@ -260,21 +260,21 @@ class GeneralConf():
     
     
     
-        def case_menace(self, posLine, posCol, piece):
-        """
-        @NR vérifier si la case est menace par ennemi
-        :param posLine:  position ligne INT
-        :param posCol: position colonne INT
-        :param piece: piece appartenant à l'équipe ami
-        :return: True si la case est menace, False sinon
-        """
-        pos_arrivee = [posLine, posCol]
-        for piece1 in self.pieces:
-            if not self.sameTeam(piece, piece1):
-                if self.verification_deplacement_new(piece1, piece1.PossibleMoves(),
-                                                     pos_arrivee):  # si la piece enemi peut se deplacer sur cette case alors la case est menace
-                    return True
-        return False
+    def case_menace(self, posLine, posCol, piece):
+            """
+            @NR vérifier si la case est menace par ennemi
+            :param posLine:  position ligne INT
+            :param posCol: position colonne INT
+            :param piece: piece appartenant à l'équipe ami
+            :return: True si la case est menace, False sinon
+            """
+            pos_arrivee = [posLine, posCol]
+            for piece1 in self.pieces:
+                if not self.sameTeam(piece, piece1):
+                    if self.verification_deplacement_new(piece1, piece1.PossibleMoves(),
+                                                         pos_arrivee):  # si la piece enemi peut se deplacer sur cette case alors la case est menace
+                        return True
+            return False
     
     
 # =============================================================================
