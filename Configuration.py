@@ -348,8 +348,8 @@ class GeneralConf():
                 if not (roque_roi_fait):
                     self.add_msg_error("déplacement interdit ou mise en échec du roi")
 
-        if piece.__class__ is Tour:
-            if self.verification_deplacement_tour(piece, piece.PossibleMoves(), pos_arrivee):
+        if not (piece.__class__ is Roi):
+            if self.verification_deplacement_new(piece, piece.PossibleMoves(), pos_arrivee):
                 if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
                     self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
                 else:
@@ -357,48 +357,6 @@ class GeneralConf():
 
             else:
                 self.add_msg_error("Déplacement interdit")
-
-        if piece.__class__ is Fou:
-            if self.verification_deplacement_fou(piece, piece.PossibleMoves(), pos_arrivee):
-                if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
-                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
-                else:
-                    piece.set_piece_position(pos_arrivee)
-
-            else:
-                self.add_msg_error("Déplacement interdit")
-
-        if piece.__class__ is Dame:
-            if self.verification_deplacement_dame(piece, piece.PossibleMoves(), pos_arrivee):
-                if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
-                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
-                else:
-                    piece.set_piece_position(pos_arrivee)
-
-            else:
-                self.add_msg_error("Déplacement interdit")
-
-        if piece.__class__ is Pion:
-            if self.verification_deplacement_pion(piece, piece.PossibleMoves(), pos_arrivee):
-                if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
-                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
-                else:
-                    piece.set_piece_position(pos_arrivee)
-
-            else:
-                self.add_msg_error("Déplacement interdit")
-
-        if piece.__class__ is Cavalier:
-            if self.verification_deplacement_cavalier(piece, piece.PossibleMoves(), pos_arrivee):
-                if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
-                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
-                else:
-                    piece.set_piece_position(pos_arrivee)
-
-            else:
-                self.add_msg_error("Déplacement interdit")
-
-
 
     def deplacement_piece(self, pos_depart, pos_arrivee, upper):
         """
