@@ -283,13 +283,13 @@ class GeneralConf():
         :param pos_arrivee: Position d'arrivée désirée par le joueur pour la pièce
         """
 
-        if piece.__class__ is Roi:  # on regarde si la piece en question en roi, au quel cas on doit verifier si le move entraine un echec ou echec et matt
+        if piece.__class__ is Roi:  # on regarde si la piece en question est un roi, au quel cas on doit verifier s'il peut faire le roque ou pas et que le move n'entraine pas un echec ou echec et mat
             roque_roi_fait = False
             if piece in self.pieces_firstMove:  # roi n'a pas encore joue son premier tour
                 # on essaie le roque
                 roque_roi_fait = self.roqueRoi(piece, pos_arrivee)
 
-            if not (roque_roi_fait) and self.verification_deplacement_roi(piece, piece.PossibleMoves(), pos_arrivee):
+            if not (roque_roi_fait) and self.verification_deplacement_roi(piece, piece.PossibleMoves(), pos_arrivee): # deplacement normal du roi
                 if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
                     self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
                 else:
@@ -300,10 +300,10 @@ class GeneralConf():
                 if not (roque_roi_fait):
                     self.add_msg_error("déplacement interdit ou mise en échec du roi")
 
-        if piece.__class__ is Pion:
+        if piece.__class__ is Pion: # on traite le pion séparement car ses deplacements d'attaques ne sont pas les mêmes que ses deplacements normaux et qu'il ne peut attaquer que si la case ou il veut attaque est occupee par l'ennemi
             if self.verification_deplacement(piece, piece.PossibleMoves(), pos_arrivee):
                 if self.case_occupe(pos_arrivee[0], pos_arrivee[1]) and (pos_arrivee in piece.PossibleMoves()[1]): # on veut attaquer et la case est occupee
-                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
+                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee) # on ne se soucie pas si la case est occupee par une piece alliee ou ennemie car elle est realisee dans self.verification_deplacement()
                 elif pos_arrivee in piece.PossibleMoves()[0]: # on veut bouger le pion normalement
                     piece.set_piece_position(pos_arrivee)
                 else:

@@ -69,6 +69,8 @@ def init_pieces(configuration):
 
 
 
+
+
 def affichage_plateau(matrice_affichage):
     """
     @RG
