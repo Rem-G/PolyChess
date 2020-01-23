@@ -512,13 +512,13 @@ class GeneralConf():
 
         if fou.position[0] > pos_arrivee[0] and fou.position[1] > pos_arrivee[
             1]:  # on parcours de droite a gauche et du bas vers le haut (diagonale)
-            posCol = posCol - 1  # on ne prend pas en compte la case de la pièce de départ et celle de la case d'arrive comme la boucle for dans verification deplacement tour
+            posCol = posCol - 1  # on ne prend pas en compte la case de la piece de départ et celle de la piece d'arrive comme la boucle for dans verification deplacement tour
             posLine = posLine - 1
             while (posLine >= pos_arrivee[0] + 1) and (posCol >= pos_arrivee[1] + 1):
                 if posLine < 1 or posCol < 1 or self.case_occupe(posLine,
                                                                  posCol):  # on verifie si on sort de l'echiquier
                     return False
-                posCol = posCol - 1  
+                posCol = posCol - 1
                 posLine = posLine - 1
             return True
 
@@ -585,7 +585,7 @@ class GeneralConf():
         possible_eat = moves[1]
 
         # ATTAQUE
-        if pos_arrivee in possible_eat:  # pour verifier l'attaque, on verifie si la position d'arrivee est dans les attaques du pion et si la position arrivee est occup par une piece enemi ou si elle n'est pas occupe
+        if pos_arrivee in possible_eat:  # pour verifier l'attaque, on verifie si la position d'arrivee est dans les attaques du pion et si la position arrivee est occupee par une piece enemi ou si elle n'est pas occupe
             if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
                 for piece in self.pieces:
                     if piece.position == pos_arrivee and not (self.sameTeam(piece, pion)):
@@ -596,12 +596,10 @@ class GeneralConf():
                 return True # on dit que la case est potentiellement menacee (cf. fonction case_menace()), car le pion ne peut pas toute de suite attaquer
 
         # DEPLACEMENT NORMAL
-        if pos_arrivee in possible_moves or (
-                pos_arrivee in possible_eat):  # on ne fait pas l'attaque ici mais dans la fonction mange_piece
-
+        if pos_arrivee in possible_moves :  # opour verifier le deplacement normal, on verifie si une case entre la case de depart et la case d'arrive est occupe
             if pion.position[0] < pos_arrivee[0]:
                 for posLine in (pion.position[0] + 1, pos_arrivee[0]):  # parours du haut vers le bas
-                    if self.case_occupe(posLine, pion.position[1]):
+                    if self.case_occupe(posLine, pion.position[1]): # on ne prend pas en compte si la case est occupe par une piece allie ou ennemi car dasn tout les cas, le pion ne peut pas attaquer en ligne droite
                         return False
                 return True
             if pion.position[0] > pos_arrivee[0]:
