@@ -682,7 +682,7 @@ class GeneralConf():
         :return: True si le joueur est en echec et mat, False sinon
         """
 
-        # NOTE: le roi est en echec et mac s'il est en echec et qu'au coup suivant il est encore en echec
+        # NOTE: le roi est en echec et mat s'il est en echec et qu'au coup suivant il est encore en echec
         # pour cela, on simule les coups possibles de chaque piece del'equipe pour voir si un des coups arrive a proteger le roi
         # Comment? pour chaque coup de chaque piece, le programe regarde si le roi est protege ou pas et dans les deux cas, il remet l'etat initial de l'echiquier
         # si dans la simulation, une piece est mange, le programme la remet a sa derniere position et si une piece a bouge, il la remet aussi a sa derniere position
