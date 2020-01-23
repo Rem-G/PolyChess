@@ -11,8 +11,6 @@ class Joueur():
         self.pieces_mangees = list()
         self.BOT = False
 
-
-
     def init_bot(self, configuration):
         """
         :param couleur:
@@ -20,8 +18,6 @@ class Joueur():
         :return:
         """
         self.BOT = Bot(self.couleur, configuration)
-
-
 
     def add_point(self, piece):
         """
@@ -33,24 +29,20 @@ class Joueur():
 
 
 class GeneralConf():
-# La classe GénéralConf est la plus volumineuse du programme 
-# elle est donc triée en plusieurs parties
-# Attention par la suite les lignes ne seront surment pas exactement les bonnes
-    
-# 1: Inisialisation de la classe        ~ligne n° 52
-# 2: Sauvegarde d'une partie            ~ligne n° 108 
-# 3: Fonctions préliminaires            ~ligne n° 182
-# 4: Fonctions de déplacement           ~ligne n° 282
-# 5: Fonctions pour le roi              ~ligne n° 724
-# 6: Fonctions pour les coups spéciaux  ~ligne n° 891
-    
-    
-    
-    
-    
-# =============================================================================
-#     Initialisation de la classe + création des constructeurs
-# =============================================================================
+    # La classe GénéralConf est la plus volumineuse du programme
+    # elle est donc triée en plusieurs parties
+    # Attention par la suite les lignes ne seront surment pas exactement les bonnes
+
+    # 1: Inisialisation de la classe        ~ligne n° 52
+    # 2: Sauvegarde d'une partie            ~ligne n° 108
+    # 3: Fonctions préliminaires            ~ligne n° 182
+    # 4: Fonctions de déplacement           ~ligne n° 282
+    # 5: Fonctions pour le roi              ~ligne n° 724
+    # 6: Fonctions pour les coups spéciaux  ~ligne n° 891
+
+    # =============================================================================
+    #     Initialisation de la classe + création des constructeurs
+    # =============================================================================
     def __init__(self):
         self.pieces = list()
         self.msg_error = list()
@@ -62,17 +54,13 @@ class GeneralConf():
         self.died_pieces_N = list()
         self.in_promotion = False
         self.dernierCoup = list()
-  
-    
-    
+
     def add_piece(self, piece):
         """
         @RG
         Ajoute une nouvelle pièce à la liste de pièces existantes
         """
         self.pieces.append(piece)
-
-
 
     def del_piece(self, piece):
         """
@@ -84,16 +72,12 @@ class GeneralConf():
             self.died_pieces_N.append(piece.nom)
         self.pieces.pop(self.pieces.index(piece))
 
-
-
     def add_msg_error(self, msg):
         """
         @RG
         """
         if msg not in self.msg_error:
             self.msg_error.append(msg)
-
-
 
     def init_joueurs(self):
         """
@@ -102,11 +86,10 @@ class GeneralConf():
         """
         self.joueurB = Joueur('B')
         self.joueurN = Joueur('N')
-        
-        
-# =============================================================================
-#     Sauvegarde et chargement d'une partie    
-# =============================================================================
+
+    # =============================================================================
+    #     Sauvegarde et chargement d'une partie
+    # =============================================================================
     def sauvegarde_partie(self, joueur):
         """
         @RG
@@ -124,8 +107,6 @@ class GeneralConf():
             file.write(str([self.joueurN.couleur, self.joueurN.points]) + '/')
 
             file.write(str(joueur))
-
-
 
     def charger_partie(self):
         """
@@ -175,12 +156,9 @@ class GeneralConf():
 
             self.joueur_sauvegarde = int(elements[len(elements) - 1])
 
-
-
-
-# =============================================================================
-#   Fonctions préliminaires
-# =============================================================================
+    # =============================================================================
+    #   Fonctions préliminaires
+    # =============================================================================
 
     def avantage_joueur(self):
         """
@@ -198,19 +176,15 @@ class GeneralConf():
 
         return self.avantage
 
-
-
     def pieces_joueurs(self):
         """
    
         """
         for piece in self.pieces:
             if piece.nom.isupper():
-                self.pieces_joueurB.append(piece)  
+                self.pieces_joueurB.append(piece)
             else:
-                self.pieces_joueurN.append(piece)  
-
-
+                self.pieces_joueurN.append(piece)
 
     def matrice_affichage(self):
         """
@@ -244,9 +218,7 @@ class GeneralConf():
         matrice_screen[len(matrice_screen) - 4].append(pieces_mangees_N)
 
         return matrice_screen
-    
-    
-    
+
     def sameTeam(self, piece1, piece2):
         """ @NR
         verifie si piece 1 et piece 2 sont dans le meme equipe
@@ -257,30 +229,32 @@ class GeneralConf():
         if (piece1.nom.isupper() and piece2.nom.isupper()) or (piece1.nom.islower() and piece2.nom.islower()):
             return True
         return False
-    
-    
-    
+
     def case_menace(self, posLine, posCol, piece):
-            """
-            @NR vérifier si la case est menace par ennemi
+        """
+            @NR vérifie si la case est au moins menace par une piece de l'ennemi
             :param posLine:  position ligne INT
             :param posCol: position colonne INT
             :param piece: piece appartenant à l'équipe ami
             :return: True si la case est menace, False sinon
             """
-            pos_arrivee = [posLine, posCol]
-            for piece1 in self.pieces:
-                if not self.sameTeam(piece, piece1):
+        pos_arrivee = [posLine, posCol]
+        for piece1 in self.pieces:
+            if not self.sameTeam(piece, piece1):
+                if piece1.__class__ is Pion:
+                    if pos_arrivee in piece1.PossibleMoves()[1] and self.verification_deplacement_new(piece1,piece1.PossibleMoves(),pos_arrivee):
+                        # pour le pion on verifie juste l'attaque mais pas le deplacement car le pion ne menace qu'en diagonale
+                        return True
+                else:
                     if self.verification_deplacement_new(piece1, piece1.PossibleMoves(),
                                                          pos_arrivee):  # si la piece enemi peut se deplacer sur cette case alors la case est menace
                         return True
-            return False
-    
-    
-# =============================================================================
-#   Les fonctions si dessous on pour rôle de vérifier les déplacements et 
-#   les actions associées aux pièces
-# =============================================================================
+        return False
+
+    # =============================================================================
+    #   Les fonctions si dessous on pour rôle de vérifier les déplacements et
+    #   les actions associées aux pièces
+    # =============================================================================
     def verification_deplacement(self, moves, pos_arrivee):
         """
         @RG
@@ -304,8 +278,6 @@ class GeneralConf():
                 return True
         return False
 
-
-
     def mange_piece(self, piece, possible_eat, pos_arrivee):
         """
         @RG @NR mange une piece
@@ -322,8 +294,6 @@ class GeneralConf():
                     self.joueurN.add_point(p)
                 self.del_piece(p)
                 piece.set_piece_position(pos_arrivee)
-
-
 
     def tour_joueur(self, piece, pos_arrivee):
         """
@@ -348,7 +318,18 @@ class GeneralConf():
                 if not (roque_roi_fait):
                     self.add_msg_error("déplacement interdit ou mise en échec du roi")
 
-        if not (piece.__class__ is Roi):
+        if piece.__class__ is Pion:
+            if self.verification_deplacement_new(piece, piece.PossibleMoves(), pos_arrivee):
+                if self.case_occupe(pos_arrivee[0], pos_arrivee[1]) and (pos_arrivee in piece.PossibleMoves()[1]): # on veut attaquer et la case est occupee
+                    self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
+                if not(self.case_occupe(pos_arrivee[0], pos_arrivee[1])) and (pos_arrivee in piece.PossibleMoves()[0]): # on veut bouger le pion normalement
+                    piece.set_piece_position(pos_arrivee)
+                else:
+                    self.add_msg_error("Déplacement interdit")
+            else:
+                self.add_msg_error("Déplacement interdit")
+
+        if not (piece.__class__ is Roi) and not(piece.__class__ is Pion):
             if self.verification_deplacement_new(piece, piece.PossibleMoves(), pos_arrivee):
                 if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
                     self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
@@ -380,9 +361,10 @@ class GeneralConf():
                     # Vérification de la position actuelle de la pièce et de la position de départ demandée par l'utilisateur
                     if upper is True:
                         # Tour du joueur blanc
-                        
+
                         if piece.nom.isupper():
-                            if self.enPassant()[0] == True and pos_depart == self.enPassant()[1].position and pos_arrivee == self.enPassant()[3]:
+                            if self.enPassant()[0] == True and pos_depart == self.enPassant()[
+                                1].position and pos_arrivee == self.enPassant()[3]:
                                 encours = self.enPassant()
                                 encours[1].set_piece_position(encours[3])
                                 self.del_piece(encours[2])
@@ -390,7 +372,7 @@ class GeneralConf():
                             # Vérification nom piece, affiche un message d'erreur si ce déplacement est interdit
                             else:
                                 self.tour_joueur(piece, pos_arrivee)
-                            self.dernierCoup = [pos_depart,pos_arrivee]
+                            self.dernierCoup = [pos_depart, pos_arrivee]
 
                         else:
                             self.add_msg_error("Cette pièce appartient à l'adversaire !")
@@ -398,7 +380,8 @@ class GeneralConf():
                     else:
                         # Tour du joueur noir
                         if piece.nom.islower():
-                            if self.enPassant()[0] == True and pos_depart == self.enPassant()[1].position and pos_arrivee == self.enPassant()[3]:
+                            if self.enPassant()[0] == True and pos_depart == self.enPassant()[
+                                1].position and pos_arrivee == self.enPassant()[3]:
                                 encours = self.enPassant()
                                 encours[1].set_piece_position(encours[3])
                                 self.del_piece(encours[2])
@@ -406,7 +389,7 @@ class GeneralConf():
                             # Vérification nom piece, affiche un message d'erreur si ce déplacement est interdit
                             else:
                                 self.tour_joueur(piece, pos_arrivee)
-                            self.dernierCoup = [pos_depart,pos_arrivee]
+                            self.dernierCoup = [pos_depart, pos_arrivee]
                         else:
                             self.add_msg_error("Cette pièce appartient à l'adversaire !")
 
@@ -417,9 +400,7 @@ class GeneralConf():
         else:
             # Si le joueur entre des coordonnées en dehor du plateau de jeu
             self.add_msg_error("Merci de jouer sur le plateau")
-        
-        
-        
+
     def verification_deplacement_new(self, piece, moves, pos_arrivee):
         """
         @NR
@@ -437,9 +418,7 @@ class GeneralConf():
             return self.verification_deplacement_pion(piece, moves, pos_arrivee)
         if piece.__class__ is Cavalier:
             return self.verification_deplacement_cavalier(piece, moves, pos_arrivee)
-        
-        
-        
+
     def verification_deplacement_roi(self, roi, moves, pos_arrivee):  # OK marche
         """ @NR
         Verifie si le deplacement du roi est possible, sans l'emmener en echec
@@ -467,8 +446,6 @@ class GeneralConf():
                 # Vérification si la position d'arrivée voulue est sur le plateau de jeu
                 return True
         return False
-
-
 
     def verification_deplacement_tour(self, tour, moves, pos_arrivee):
         """
@@ -522,8 +499,6 @@ class GeneralConf():
             return True
 
         return False  # car pos arrivee n'est pas dans les PossibleMoves (sur meme ligne ou meme colonne)
-
-
 
     def verification_deplacement_fou(self, fou, moves, pos_arrivee):
         """
@@ -600,8 +575,6 @@ class GeneralConf():
 
         return False  # pos_arrivee n'est pas sur une diagonale
 
-
-
     def verification_deplacement_dame(self, dame, moves, pos_arrivee):
         """
          @NR
@@ -617,8 +590,6 @@ class GeneralConf():
             return True
         return False
 
-
-
     def verification_deplacement_pion(self, pion, moves, pos_arrivee):
         """
          @NR
@@ -631,13 +602,18 @@ class GeneralConf():
         possible_moves = moves[0]
         possible_eat = moves[1]
 
-        if pos_arrivee in possible_eat:  # pour verifier l'attaque, on verifie si la position d'arrivee est dans les attaques du pion et si la position arrivee est occup par une piece enemi
+        # ATTAQUE
+        if pos_arrivee in possible_eat:  # pour verifier l'attaque, on verifie si la position d'arrivee est dans les attaques du pion et si la position arrivee est occup par une piece enemi ou si elle n'est pas occupe
             if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
                 for piece in self.pieces:
                     if piece.position == pos_arrivee and not (self.sameTeam(piece, pion)):
                         return True
-            return False
+                    if piece.position == pos_arrivee and self.sameTeam(piece, pion):
+                        return False
+            else: # si la case n'est pas occupe, on renvoit quand même True, mais la validation de l'attaque n'est geree que dans tour_joueur()
+                return True # on dit que la case est potentiellement menacee (cf. fonction case_menace())
 
+        # DEPLACEMENT NORMAL
         if pos_arrivee in possible_moves or (
                 pos_arrivee in possible_eat):  # on ne fait pas l'attaque ici mais dans la fonction mange_piece
 
@@ -651,9 +627,8 @@ class GeneralConf():
                     if self.case_occupe(posLine, pion.position[1]):  # parcrous du bas vers le heut
                         return False
                 return True
+
         return False
-
-
 
     def verification_deplacement_cavalier(self, cavalier, moves, pos_arrivee):
         """
@@ -674,13 +649,10 @@ class GeneralConf():
                         return False
             return True
         return False
-    
-    
-    
-    
-# =============================================================================
-# Les fonctions si dessous sont pour le roi (Mise en échecs / échecs et mat ...) 
-# =============================================================================
+
+    # =============================================================================
+    # Les fonctions si dessous sont pour le roi (Mise en échecs / échecs et mat ...)
+    # =============================================================================
 
     def init_roi(self, roi):
         """
@@ -691,8 +663,6 @@ class GeneralConf():
             self.joueurB.roi = roi
         else:
             self.joueurN.roi = roi
-
-
 
     def case_occupe(self, posLine, posCol):
         """
@@ -705,8 +675,6 @@ class GeneralConf():
             if piece.get_piece_position() == [posLine, posCol]:
                 return True
         return False
-
-
 
     def est_en_echec(self, joueur):
         """
@@ -723,8 +691,6 @@ class GeneralConf():
             return True
         return False
 
-
-
     def est_en_eche_et_mat(self,
                            joueur):  # si le roi est en echec et en echec aussi au prochain coup et aucune parade ne peut-etre faite
         """
@@ -733,10 +699,10 @@ class GeneralConf():
         :return: True si le joueur est en echec et mat, False sinon
         """
 
-        #NOTE: le roi est en echec et mac s'il est en echec et qu'au coup suivant il est encore en echec
-        #pour cela, on simule les coups possibles de chaque piece del'equipe pour voir si un des coups arrive a proteger le roi
-        #Comment? pour chaque coup de chaque piece, le programe regarde si le roi est protege ou pas et dans les deux cas, il remet l'etat initial de l'echiquier
-        #si dans la simulation, une piece est mange, le programme la remet a sa derniere position et si une piece a bouge, il la remet aussi a sa derniere position
+        # NOTE: le roi est en echec et mac s'il est en echec et qu'au coup suivant il est encore en echec
+        # pour cela, on simule les coups possibles de chaque piece del'equipe pour voir si un des coups arrive a proteger le roi
+        # Comment? pour chaque coup de chaque piece, le programe regarde si le roi est protege ou pas et dans les deux cas, il remet l'etat initial de l'echiquier
+        # si dans la simulation, une piece est mange, le programme la remet a sa derniere position et si une piece a bouge, il la remet aussi a sa derniere position
 
         if joueur == 1:
             roi = self.joueurB.roi
@@ -753,7 +719,8 @@ class GeneralConf():
             # Pour cela on test pour chaque piece, tout les coups possibles et on regarde si apres le roi n'est plus en echec
             for piece in self.pieces:
                 if (piece is not roi) and (self.sameTeam(piece, roi)):
-                    for move_allie in piece.PossibleMoves()[1]:  # RAPPEL: PossibleMoves()[1] -> les attaques de la piece
+                    for move_allie in piece.PossibleMoves()[
+                        1]:  # RAPPEL: PossibleMoves()[1] -> les attaques de la piece
                         if self.verification_deplacement_new(piece, piece.PossibleMoves(),
                                                              move_allie):  # on regarde si le deplacement est possible
                             # il faut maintenant tester: si on fait le coup, le roi est sauve ou pas
@@ -775,8 +742,6 @@ class GeneralConf():
             return True  # si il n'y pas de solution, on est en echec et mat
         return False
 
-
-
     def simul_mange_piece(self, piece, possible_eat, pos_arrivee):
         """
         simule le deplacement de la piece a une nouvelle position
@@ -796,11 +761,9 @@ class GeneralConf():
         simul_piece_bouge = piece
         piece.set_piece_position(pos_arrivee)
 
-        return [simul_piece_bouge, simul_piece_mange] #simul_piece_bouge est la piece qui a bouge et dont la position est celle avant le coup
-                                                      #simul_piece_mange est la piece qui est mange dans la simulation
-
-
-
+        return [simul_piece_bouge,
+                simul_piece_mange]  # simul_piece_bouge est la piece qui a bouge et dont la position est celle avant le coup
+        # simul_piece_mange est la piece qui est mange dans la simulation
 
     def pat(self,
             joueur):  # c'est a dire le roi du joueur n'est pas en echec mais il ne peut plus jouer de coup sans mettre son roi en echec
@@ -845,9 +808,9 @@ class GeneralConf():
             return True  # si il n'y pas de solution, on est en echec et mat
         return False
 
-# =============================================================================
-# Les coups spéciaux des échecs
-# =============================================================================
+    # =============================================================================
+    # Les coups spéciaux des échecs
+    # =============================================================================
 
     def promotion(self, piece):
         """
@@ -877,33 +840,33 @@ class GeneralConf():
             self.add_piece(Dame(nom_piece, position))
         self.in_promotion = False
 
-
-
     def enPassant(self):
-        
+
         """
         Création de l'en passant
         return: False si aucun en passant est disponible
                 true est les coordonnée des 2 pièces et la case de l'en passant
         """
-        
+
         for piece in self.pieces:
             if piece.nom.isupper and piece.nom == 'P' and piece.position[0] == 5:
-                #Si le joueur est blanc est que le pion est sur la 5ème rangée et que la pièce est un pion
+                # Si le joueur est blanc est que le pion est sur la 5ème rangée et que la pièce est un pion
                 for piece1 in self.pieces:
-                    #On fait une nouvelle boucle sur les pieces pour voir si une pièce noir est à coté de la notre
-                    if piece1.nom == 'p' and piece1.position[0] == 5 and ((piece.position[1] + 1 == (piece1.position[1])) or (piece.position[1] -1 == (piece1.position[1]))) and self.dernierCoup[0][0] == 3:
-                        return([True,piece,piece1,[piece1.position[0]-1,piece1.position[1]]])
-                    
-            elif piece.nom.islower() and  piece.nom == 'p' and piece.position[0] == 6 :
-                 for piece2 in self.pieces:
-                    #On fait une nouvelle boucle sur les pieces pour voir si une pièce blanche est à coté de la notre
-                    if piece2.nom == 'P' and piece2.position[0] == 6 and (piece2.position[1] == piece.position[1] + 1 or piece2.position[1] == piece.position[1] - 1) and self.dernierCoup[0][0] == 8:
-                        return([True,piece,piece2,[piece2.position[0]+1,piece2.position[1]]])
-        return([False])
-        
-        
-        
+                    # On fait une nouvelle boucle sur les pieces pour voir si une pièce noir est à coté de la notre
+                    if piece1.nom == 'p' and piece1.position[0] == 5 and (
+                            (piece.position[1] + 1 == (piece1.position[1])) or (
+                            piece.position[1] - 1 == (piece1.position[1]))) and self.dernierCoup[0][0] == 3:
+                        return ([True, piece, piece1, [piece1.position[0] - 1, piece1.position[1]]])
+
+            elif piece.nom.islower() and piece.nom == 'p' and piece.position[0] == 6:
+                for piece2 in self.pieces:
+                    # On fait une nouvelle boucle sur les pieces pour voir si une pièce blanche est à coté de la notre
+                    if piece2.nom == 'P' and piece2.position[0] == 6 and (
+                            piece2.position[1] == piece.position[1] + 1 or piece2.position[1] == piece.position[
+                        1] - 1) and self.dernierCoup[0][0] == 8:
+                        return ([True, piece, piece2, [piece2.position[0] + 1, piece2.position[1]]])
+        return ([False])
+
     def roqueRoi(self, roi, pos_arrivee):
         """
         @NR
@@ -915,7 +878,8 @@ class GeneralConf():
         tour_allie = list()  # tour_allie : list des tours de tour allie
         for piece1 in self.pieces:
             if piece1.__class__ is Tour and self.sameTeam(roi, piece1):
-                tour_allie.append(piece1) #on fait une liste de tour allie pour ne pas devoir a le chercher a chaque fois
+                tour_allie.append(
+                    piece1)  # on fait une liste de tour allie pour ne pas devoir a le chercher a chaque fois
         for tour in tour_allie:
             if tour.position == pos_arrivee:
                 if tour.firstMove():
@@ -939,7 +903,7 @@ class GeneralConf():
                     if col_roi < col_tour:  # petit roque
                         col_roi = col_roi + 2
                         col_tour = col_tour - 2
-                    else:                   # grand roque
+                    else:  # grand roque
                         col_roi = col_roi - 2
                         col_tour = col_tour + 3
 

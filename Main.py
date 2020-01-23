@@ -21,8 +21,8 @@ def init_pieces(configuration):
     configuration.add_piece(Pion("P", [8, 1]))
     configuration.add_piece(Pion("P", [8, 2]))
     configuration.add_piece(Pion("P", [8, 3]))
-    configuration.add_piece(Pion("P", [8, 4]))
-    configuration.add_piece(Pion("P", [8, 5]))
+    #configuration.add_piece(Pion("P", [8, 4]))
+    #configuration.add_piece(Pion("P", [8, 5]))
     configuration.add_piece(Pion("P", [8, 6]))
     configuration.add_piece(Pion("P", [8, 7]))
     configuration.add_piece(Pion("P", [8, 8]))
@@ -67,7 +67,8 @@ def init_pieces(configuration):
     configuration.add_piece(roiN)
     configuration.init_roi(roiN)
 
-
+    #
+    configuration.add_piece(Pion("p", [7, 5]))
 
 def affichage_plateau(matrice_affichage):
     """
