@@ -21,10 +21,10 @@ class Piece:  # Classe mère
 ###########################################################################################################
 ###########################################################################################################
 
-class Pion(Piece):                                          ############################################################
-    def __init__(self, nom, pos_initiale):   #####ATTENTION: est ce que c'est checker le fait que #######
-        super().__init__(nom, pos_initiale)  # la piece ne peut pas sauter par dessus les autres pieces##
-        self.firstMove = True                               ############################################################
+class Pion(Piece):                                         
+    def __init__(self, nom, pos_initiale):   
+        super().__init__(nom, pos_initiale)  
+        self.firstMove = True                              
         self.promotion = True
         self.pos_initiale = pos_initiale
 
@@ -102,9 +102,9 @@ class Roi(Piece):
 ###########################################################################################################
 ###########################################################################################################
 
-class Tour(Piece):                                          ############################################################
-    def __init__(self, nom, pos_initiale):                  #####ATTENTION: est ce que c'est checker le fait que #######
-        super().__init__(nom, pos_initiale)                 # la piece ne peut pas sauter par dessus les autres pieces##
+class Tour(Piece):                                          
+    def __init__(self, nom, pos_initiale):                  
+        super().__init__(nom, pos_initiale)                 
         self.pos_intiale = pos_initiale
 
 
@@ -184,10 +184,10 @@ class Cavalier(Piece):
 ###########################################################################################################
 
 
-class Fou(Piece):                                           ############################################################
-    def __init__(self, nom, pos_initiale):   #####ATTENTION: est ce que c'est checker le fait que #######
-        super().__init__(nom, pos_initiale)  # la piece ne peut pas sauter par dessus les autres pieces##
-                                                            ############################################################
+class Fou(Piece):                                           
+    def __init__(self, nom, pos_initiale):   
+        super().__init__(nom, pos_initiale)  
+                                                            
 
     def PossibleMoves(self):
         '''
