@@ -5,7 +5,7 @@ class Piece:  # Classe mère
 
     def get_piece_position(self):
         """
-        @TC
+
         """
         return self.position
 
@@ -13,7 +13,6 @@ class Piece:  # Classe mère
         """
         :param position type (int, int): Coordonnees de la destination
         Met à jour la position du pion
-        @TC
         """
         self.position = position
 
@@ -31,14 +30,12 @@ class Pion(Piece):
     def firstMoveOver(self):
         """
         Permet de mettre à jour l'etat du 1er tour du pion
-        @TC
         """
         self.firstMove = False
 
     def PossibleMoves(self):
         """
         :return type list: Liste des moves possibles pour le pion
-        @TC
         """
         moves, capture = [], []
 
@@ -74,13 +71,10 @@ class Pion(Piece):
 class Roi(Piece):
 
     def __init__(self, nom, pos_initiale):
-        """@NR
-        :type nom: string
-        """
         super().__init__(nom, pos_initiale)
 
     def PossibleMoves(self):
-        """ return une liste des moves possibles pour le roi @NR"""
+        """ return une liste des moves possibles pour le roi"""
         # je teste avec les coordonnees carstesiennes pas avec les coordonnes de l'echiquer
 
         x = self.position[0]
@@ -107,7 +101,6 @@ class Tour(Piece):
     def PossibleMoves(self):
         '''
         Retourne la liste possible pour un tour
-        @LV
         '''
         x = self.position[1]
         y = self.position[0]
@@ -158,7 +151,6 @@ class Cavalier(Piece):
     def PossibleMoves(self):
         """
 		:return list: retourne la liste des mobves possibles pour le cavalier
-		@TC
 		"""
         moves = []
 
@@ -188,7 +180,6 @@ class Fou(Piece):
     def PossibleMoves(self):
         '''
         Retourne la liste des mouvements d'un fou en connaissant  sa position initial
-        @LV
         '''
         x = self.position[1]
         y = self.position[0]
@@ -241,7 +232,6 @@ class Dame(Piece):
     def PossibleMoves(self):
         '''
         Retourne la liste des mouvements d'un fou en connaissant  sa position initial
-        @LV
         '''
         x = self.position[1]
         y = self.position[0]

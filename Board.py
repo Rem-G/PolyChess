@@ -4,7 +4,6 @@ class Mat64():
 
 	def matrice_init(self):
 		"""
-		@RG
 		-1 représente une zone non accessible par une pièce de jeu
 		:return list: Renvoie la matrice initiale de taille 12*10
 		"""
@@ -12,7 +11,6 @@ class Mat64():
 
 	def matrice_jeu(self):
 		"""
-		@RG
 		-1 représente une zone non accessible par une pièce de jeu
 		:return new_board: Echequier de taille 12*10 pour une surface de jeu de 8*8 permettant de gêrer les débordements. Les emplacements jouables sont représentés par un entier différent de -1
 		"""
@@ -37,7 +35,6 @@ class Mat64():
 
 	def position_piece_mat(self, piece_pos):
 		"""
-		@RG
 		Passe du référentiel joueur ex : a,2 au référentiel matriciel du plateau de jeu ex : 4,7
 		:return list: Renvoie la position de la pièce dans le référentiel de la matrice de l'échéquier
 		"""
@@ -51,7 +48,6 @@ class Mat64():
 
 	def valeur_position_piece_mat(self, piece_pos):
 		"""
-		@RG
 		:param piece_pos: Position de l'élément à retourner
 		:return int: Renvoie d'une case de la matrice de jeu définie par rapport à sa position
 		"""

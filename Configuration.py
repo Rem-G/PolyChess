@@ -21,7 +21,7 @@ class Joueur():
 
     def add_point(self, piece):
         """
-        @RG
+
         """
         points_pieces = {'p': 1, 'P': 1, 'f': 3, 'F': 3, 'c': 3, 'C': 3, 't': 5, 'T': 5, 'd': 9, 'D': 9}
         self.points += points_pieces[piece.nom]
@@ -58,7 +58,6 @@ class GeneralConf():
 
     def add_piece(self, piece):
         """
-        @RG
         Ajoute une nouvelle pièce à la liste de pièces existantes
         """
         self.pieces.append(piece)
@@ -69,7 +68,7 @@ class GeneralConf():
 
     def del_piece(self, piece):
         """
-        @RG
+
         """
         if piece.nom.isupper() and self.in_promotion is False:
             self.died_pieces_B.append(piece.nom)
@@ -79,14 +78,13 @@ class GeneralConf():
 
     def add_msg_error(self, msg):
         """
-        @RG
+
         """
         if msg not in self.msg_error:
             self.msg_error.append(msg)
 
     def init_joueurs(self):
         """
-        @RG
         Crée les joueurs (couleur, points à 0)
         """
         self.joueurB = Joueur('B')
@@ -97,7 +95,6 @@ class GeneralConf():
     # =============================================================================
     def sauvegarde_partie(self, joueur):
         """
-        @RG
         Sauvegarde la partie (pièces, tour du joueur, avantage)
         """
         os.remove('sauvegarde.txt')
@@ -115,7 +112,6 @@ class GeneralConf():
 
     def charger_partie(self):
         """
-        @RG
         Charge une partie existante si le fichier sauvegade.txt existe
         """
         try:
@@ -167,7 +163,6 @@ class GeneralConf():
 
     def avantage_joueur(self):
         """
-        @RG
         :return str or None: Si un joueur a l'avantage, renvoie sa couleur et son score
         """
         if self.joueurB.points > self.joueurN.points:
@@ -193,7 +188,6 @@ class GeneralConf():
 
     def matrice_affichage(self):
         """
-        @RG
         Génère la matrice d'interface utilisateur en supprimant les lignes de -1 et affichant le nom de chaque pièce en fonction de leur emplacement
         sur l'échiquier 
         :return matrice_screen: Matrice 8*8 avec le nom des pièces affiché sur leur position, les -1 de la matrice initiale sont convertis en '.'
@@ -225,7 +219,7 @@ class GeneralConf():
         return matrice_screen
 
     def sameTeam(self, piece1, piece2):
-        """ @NR
+        """
         verifie si piece 1 et piece 2 sont dans le meme equipe
         :param piece1 : une piece
         :param piece2 : une piece
@@ -237,12 +231,12 @@ class GeneralConf():
 
     def case_menace(self, posLine, posCol, piece):
         """
-            @NR vérifie si la case est au moins menace par une piece de l'ennemi
-            :param posLine:  position ligne INT
-            :param posCol: position colonne INT
-            :param piece: piece appartenant à l'équipe ami
-            :return: True si la case est menace, False sinon
-            """
+        vérifie si la case est au moins menace par une piece de l'ennemi
+        :param posLine:  position ligne INT
+        :param posCol: position colonne INT
+        :param piece: piece appartenant à l'équipe ami
+        :return: True si la case est menace, False sinon
+        """
         pos_arrivee = [posLine, posCol]
         for piece1 in self.pieces:
             if not self.sameTeam(piece, piece1):
@@ -264,7 +258,7 @@ class GeneralConf():
 
     def mange_piece(self, piece, possible_eat, pos_arrivee):
         """
-        @RG @NR mange une piece
+        mange une piece
         :param piece: une piece
         :param possible_eat: les deplacement d'attaque de la piece
         :param pos_arrivee: Position d'arrivée désirée par le joueur pour la pièce
@@ -281,7 +275,6 @@ class GeneralConf():
 
     def tour_joueur(self, piece, pos_arrivee):
         """
-        @RG @NR
         Si le déplacement est autorisé, la position de la pièce change sinon affiche une erreur
         :param piece: Piece à vérifier
         :param pos_arrivee: Position d'arrivée désirée par le joueur pour la pièce
@@ -331,9 +324,7 @@ class GeneralConf():
 
     def deplacement_piece(self, pos_depart, pos_arrivee, upper):
         """
-        @RG
         Change de position une pièce selon la décision du joueur
-
         :param pos_depart: Position initiale de la pièce à bouger
         :param pos_depart: Position de destination de la pièce à bouger
         :param upper: Vérification du joueur faisant la requête : upper == True -> joueur blanc
@@ -393,7 +384,6 @@ class GeneralConf():
 
     def verification_deplacement(self, piece, moves, pos_arrivee):
         """
-        @NR
         execute les verfication deplacement en fonction du type de la piece
         """
         if piece.__class__ is Roi:
@@ -410,7 +400,7 @@ class GeneralConf():
             return self.verification_deplacement_cavalier(piece, moves, pos_arrivee)
 
     def verification_deplacement_roi(self, roi, moves, pos_arrivee):  # OK marche
-        """ @NR
+        """
         Verifie si le deplacement du roi est possible, sans l'emmener en echec
         :param roi: le roi
         :param moves: deplacements autorisés du roi
@@ -439,7 +429,6 @@ class GeneralConf():
 
     def verification_deplacement_tour(self, tour, moves, pos_arrivee):
         """
-        @NR
         Verifie si le deplacement de la tour est possible
         :param tour: la tour
         :param moves: deplacements autorisés du tour
@@ -492,7 +481,6 @@ class GeneralConf():
 
     def verification_deplacement_fou(self, fou, moves, pos_arrivee):
         """
-         @NR
         Verifie si le deplacement du fou est possible
         :param fou: le fou
         :param moves: deplacements autorisés du tour
@@ -566,7 +554,6 @@ class GeneralConf():
 
     def verification_deplacement_dame(self, dame, moves, pos_arrivee):
         """
-         @NR
         Verifie si le deplacement de la dame est possible
         :param dame: la dame
         :param moves: deplacements autorisés du tour
@@ -581,7 +568,6 @@ class GeneralConf():
 
     def verification_deplacement_pion(self, pion, moves, pos_arrivee):
         """
-         @NR
         Verifie si le deplacement du pion est possible
         :param pion: le pion
         :param moves: deplacements autorisés du pion
@@ -620,7 +606,6 @@ class GeneralConf():
 
     def verification_deplacement_cavalier(self, cavalier, moves, pos_arrivee):
         """
-         @NR
         Verifie si le deplacement du cavalier est possible
         :param cavalier: le cavalier
         :param moves: deplacements autorisés du cavalier
@@ -654,7 +639,7 @@ class GeneralConf():
 
     def case_occupe(self, posLine, posCol):
         """
-        @NR
+        verifie si une case est occupe ou pas
         :param posLine: position ligne
         :param posCol: position colonne
         :return bool: True si la case est occupe, False sinon
@@ -666,7 +651,7 @@ class GeneralConf():
 
     def est_en_echec(self, joueur):
         """
-        @NR verifie si le joueur est en echec (mise en echec)
+        verifie si le joueur est en echec (mise en echec)
         :param joueur: INT 1 si joueur blanc sinon joueur noir
         :return: True si le joueur est en echec, False sinon
         """
@@ -682,7 +667,7 @@ class GeneralConf():
     def est_en_eche_et_mat(self,
                            joueur):  # si le roi est en echec et en echec aussi au prochain coup et aucune parade ne peut-etre faite
         """
-        @NR verifie si le joueur est en echec et mat
+        verifie si le joueur est en echec et mat
         :param joueur:  INT 1 si joueur blanc sinon joueur noir
         :return: True si le joueur est en echec et mat, False sinon
         """
@@ -761,7 +746,6 @@ class GeneralConf():
     def promotion(self, piece):
         """
         promeut un pion en une piece choisie par l'utilisateur
-        @TC
         """
         self.in_promotion = True
         position = piece.get_piece_position()
@@ -819,7 +803,6 @@ class GeneralConf():
 
     def roqueRoi(self, roi, pos_arrivee):
         """
-        @NR
         applique le roque depuis le roi vers la tour
         :param roi : une piece roi
         :param pos_arrivee : la position d'arrivee, sur cette emplacement doit etre un roi ou une tour

@@ -10,7 +10,6 @@ class Bot():
 		"""
 		:param pieces: listes des pièces attribuées au bot
 		:return: la liste des déplacement que le bot peut effectuer
-		@TC
 		"""
 		moves, capture = list(), list()
 
@@ -24,7 +23,6 @@ class Bot():
 		"""
 		:return: une liste contenant la position initiale de la pièce aléatoirement choisie
 		et sa destination
-		@TC
 		"""
 		piece = choice(self.configuration.pieces)						# Choix d'une pièce aléatoire
 		moves = piece.PossibleMoves()[0] + piece.PossibleMoves()[1]		# Regroupement de l'ensemble des déplacements

@@ -13,7 +13,6 @@ from Configuration import *
 
 def init_pieces(configuration):
     """
-    @RG @RN
     Initialisation des pièces de jeu
     Les noms en masjuscule représentent les pièces blanches, et ceux en minuscule les pièces noires
     """
@@ -70,7 +69,6 @@ def init_pieces(configuration):
 
 def affichage_plateau(matrice_affichage):
     """
-    @RG
     Mise en forme de la matrice d'affichage pour l'affichage utilisateur
     Ajout repère
     Composition des lignes du plateau
@@ -108,7 +106,7 @@ def decision_joueur(decision, configuration):
 
 def game_pvp():
     """
-    @RG @NR
+
     """
     configuration = GeneralConf()
 
@@ -209,7 +207,7 @@ def game_pvp():
 
 def game_pvm():
     """
-    @TC
+
     """
     print('Vous allez jouer contre un BOT')
     configuration = GeneralConf()
