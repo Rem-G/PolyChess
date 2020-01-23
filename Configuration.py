@@ -839,7 +839,7 @@ class GeneralConf():
                                                                                          roi):  # on
                             # ne peut pas faire le roque, si les cases entre le roi et la tour sont occupees ou menacees.
                             return False
-                    # ou (uniquement une des deux boucles for est executee)
+                    # OU (uniquement une des deux boucles for est executee)
                     for posCol in range(tour.get_piece_position()[1] + 1, roi.get_piece_position()[1]):  # on parcours
                         # l'echiquier sur l'horizontale entre les 2 pieces (de doite à gauche)
                         if self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol, roi):
