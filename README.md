@@ -23,6 +23,10 @@ Tour à tour les joueurs communiquent leurs intentions de jeu selon le format su
 x1y1 représentant les coordonnées initiales de la pièce à déplacer et x2y2 les coordonnées de la destination de la pièce.
 **Exemple :** a2 a4
 
+## Version interface utilisateur
+Github : https://github.com/Rem-G/PolyChess_Django
+Jouer en ligne : http://ceremi.pythonanywhere.com/polychess/
+
 ## Trello
 https://trello.com/b/GnWD5gmq/polychess
 ----------
