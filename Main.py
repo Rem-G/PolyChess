@@ -7,10 +7,6 @@ GOSSELIN Rémi
 '''
 from Configuration import *
 
-
-# test commit
-
-
 def init_pieces(configuration):
     """
     Initialisation des pièces de jeu
@@ -88,7 +84,7 @@ def affichage_plateau(matrice_affichage):
 
 def decision_joueur(decision, configuration):
     """
-    @RG
+    Convertie la dédicision du joueur de str vers coordonnées matricielles ex : a2 -> [8, 1]
     :param decision: Choix de jeu du joueur en str
     :return list: Choix de jeu du joueur en list
     """
@@ -106,7 +102,7 @@ def decision_joueur(decision, configuration):
 
 def game_pvp():
     """
-
+    Fonction de jeu joueur contre joueur
     """
     configuration = GeneralConf()
 
@@ -207,7 +203,7 @@ def game_pvp():
 
 def game_pvm():
     """
-
+    Fonction de jeu joueur contre bot
     """
     print('Vous allez jouer contre un BOT')
     configuration = GeneralConf()

@@ -23,7 +23,7 @@ class Joueur():
         """
 
         """
-        points_pieces = {'p': 1, 'P': 1, 'f': 3, 'F': 3, 'c': 3, 'C': 3, 't': 5, 'T': 5, 'd': 9, 'D': 9}
+        points_pieces = {'p': 1, 'P': 1, 'f': 3, 'F': 3, 'c': 3, 'C': 3, 't': 5, 'T': 5, 'd': 8, 'D': 8}
         self.points += points_pieces[piece.nom]
         self.pieces_mangees.append(piece.nom)
 
@@ -68,7 +68,7 @@ class GeneralConf():
 
     def del_piece(self, piece):
         """
-
+        Supprime la pièce passée en paramètre
         """
         if piece.nom.isupper() and self.in_promotion is False:
             self.died_pieces_B.append(piece.nom)
@@ -78,7 +78,7 @@ class GeneralConf():
 
     def add_msg_error(self, msg):
         """
-
+        Ajoute un message d'erreur
         """
         if msg not in self.msg_error:
             self.msg_error.append(msg)
@@ -178,7 +178,7 @@ class GeneralConf():
 
     def pieces_joueurs(self):
         """
-   
+        Associe les pièces aux joueurs
         """
         for piece in self.pieces:
             if piece.nom.isupper():
