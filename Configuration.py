@@ -440,14 +440,14 @@ class GeneralConf():
         :return bool : renvoie vrai si le deplacement est possible et faux sinon
         """
         possible_moves = moves[0]
-        # pas de list possible_eat car c'est la même chose que possible moves pour le tour
+        # pas de list possible_eat car c'est la même chose que possible moves pour la tour
 
         # NOTE : on ne verifie pas si pos_arrivee est dans les possibles moves car les if le font indirectement,
         # si pos_arrivee est sur la même ligne ou sur la même colonne alors pos_arrivee est dans les PossibleMoves
 
         for piece in self.pieces:
             if piece.position == pos_arrivee and self.sameTeam(piece,
-                                                               tour):  # on verfie si la case ou lon veut se deplacer n'est pas occupe par un allie
+                                                               tour):  # on verfie si la case ou l'on veut se deplacer n'est pas occupee par une piece alliee
                 return False
 
         # modification des moves en prenant en compte l'etat de l'echiquier (postion des pieces)
@@ -455,7 +455,7 @@ class GeneralConf():
             1]:  # même ligne, parcours de gauche vers la droite
             for posCol in range(tour.position[1] + 1, pos_arrivee[1]):
                 if self.case_occupe(tour.position[0],
-                                    posCol):  # on regarde si les cases entre la tour et la pos arrivee son occupes
+                                    posCol):  # on regarde si les cases entre la tour et la pos arrivee sont occupees
                     return False
             return True
 
@@ -463,7 +463,7 @@ class GeneralConf():
             1]:  # même ligne, parcours de droite vers la gauche
             for posCol in range(tour.position[1] - 1, pos_arrivee[1], -1):
                 if self.case_occupe(tour.position[0],
-                                    posCol):  # on regarde si les cases entre la tour et la pos arrivee son occupes
+                                    posCol):  # on regarde si les cases entre la tour et la pos arrivee sont occupees
                     return False
             return True
 
@@ -481,7 +481,7 @@ class GeneralConf():
                     return False
             return True
 
-        return False  # car pos arrivee n'est pas dans les PossibleMoves (sur meme ligne ou meme colonne)
+        return False  # si pos arrivee n'est pas dans les PossibleMoves (sur meme ligne ou meme colonne)
 
     def verification_deplacement_fou(self, fou, moves, pos_arrivee):
         """
@@ -495,12 +495,11 @@ class GeneralConf():
         possible_moves = moves[0]
         # pas de list possible_eat car c'est la même chose que possible moves pour le fou
 
-        # NOTE : on ne verifie pas si pos_arrivee est dans les possibles moves car les if le font indirectement,(je verfie finalement)
-        # si pos arrivee est sur une des diagonales alors pos_arrivee est dans les PossibleMoves du fou
+        # NOTE : si pos arrivee est sur une des diagonales alors pos_arrivee est dans les PossibleMoves du fou
 
         for piece in self.pieces:
             if piece.position == pos_arrivee and self.sameTeam(piece,
-                                                               fou):  # on verfie si la case ou l'on veut se deplacer n'est pas occupe par un allie
+                                                               fou):  # on verfie si la case ou l'on veut se deplacer n'est pas occupee par une piece alliee
                 return False
 
         if not (pos_arrivee in possible_moves):
@@ -513,13 +512,13 @@ class GeneralConf():
 
         if fou.position[0] > pos_arrivee[0] and fou.position[1] > pos_arrivee[
             1]:  # on parcours de droite a gauche et du bas vers le haut (diagonale)
-            posCol = posCol - 1  # on commence apres et on s'arrete avant comme la boucle for dans verification deplacement tour
+            posCol = posCol - 1  # on ne prend pas en compte la case de la pièce de départ et celle de la case d'arrive comme la boucle for dans verification deplacement tour
             posLine = posLine - 1
             while (posLine >= pos_arrivee[0] + 1) and (posCol >= pos_arrivee[1] + 1):
                 if posLine < 1 or posCol < 1 or self.case_occupe(posLine,
-                                                                 posCol):  # on verifie si on sort de lechiquier
+                                                                 posCol):  # on verifie si on sort de l'echiquier
                     return False
-                posCol = posCol - 1  # bizarre incrementation
+                posCol = posCol - 1  
                 posLine = posLine - 1
             return True
 
