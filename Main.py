@@ -317,7 +317,11 @@ print('Voulez-vous jouer contre :')
 chx = 'M'
 chx = str(input('un humain (H) ou une machine (M) : '))
 
-if chx == 'H':
+while (chx != 'M' and chx != 'm') and (chx != 'H' and chx != 'h'):
+    print('\n\x1b[0;30;41m' + 'ATTENTION !' + '\x1b[0m')
+    chx = str(input('Veuillez entrer une valeur correcte (H/M) :\n'))
+
+if chx == 'H' or chx == 'h':
     game_pvp()
 else:
     game_pvm()
