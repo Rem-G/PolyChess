@@ -25,6 +25,7 @@ x1y1 représentant les coordonnées initiales de la pièce à déplacer et x2y2 
 
 ## Version interface utilisateur
 Github : https://github.com/Rem-G/PolyChess_Django
+
 Jouer en ligne : http://ceremi.pythonanywhere.com/polychess/
 
 ## Trello
