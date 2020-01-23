@@ -849,9 +849,13 @@ class GeneralConf():
     def enPassant(self):
 
         """
-        Création de l'en passant
-        return: False si aucun en passant est disponible
-                true est les coordonnée des 2 pièces et la case de l'en passant
+        Fonction associées au coup EnPassant. Pour faire un en passant un pion doit vérifier plusieurs contraintes, il faut qui soit sur le ligne 5 (Blanc) ou 6(Noir).
+        Attention ici nous parlons des coordonnées matricielle. De plus il faut qu'un pion adverse adjacent réalise son premier coup, en se déplacent de deux cases.
+        Les conditions vérifies l'ensembles de ces contraintes pour toutes les pièces de l'échiquier.
+        
+        La fonction prends en paramètre uniquement le self
+        Elle retourne une liste avec comme  premier paramètre un bool indiquant si passant est disponible. Si oui alors on rajoute
+        a cette liste la pièce allié, la pièce ennemi et la possition final de l'enPassant
         """
 
         for piece in self.pieces:
