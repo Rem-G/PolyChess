@@ -1,12 +1,13 @@
 # PolyChess - IDU3 - Polytech Annecy
 
-#### Responsable de projet :
+
+#### Responsable du projet :
 Gosselin Rémi
 ##### Membres du projet :
 Razafindrabe Noah, Vieu Loïc, Gosselin Rémi, Cenci Thomas
 
 Ce projet a pour but la création d'un jeu d'échecs en python. Celui-ci proposera deux modes de jeu : joueur contre joueur et joueur contre machine.
-Le jeu se joue dans un terminal de commandes.
+Il se décline en deux versions, une se jouant dans un terminal de commandes et une disposant d'une inteface utilisateur.
 
 ## Fonctionnalités:
 Les fonctionnalités disponible sont les suivantes :
