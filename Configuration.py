@@ -322,7 +322,7 @@ class GeneralConf():
             if self.verification_deplacement_new(piece, piece.PossibleMoves(), pos_arrivee):
                 if self.case_occupe(pos_arrivee[0], pos_arrivee[1]) and (pos_arrivee in piece.PossibleMoves()[1]): # on veut attaquer et la case est occupee
                     self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
-                if not(self.case_occupe(pos_arrivee[0], pos_arrivee[1])) and (pos_arrivee in piece.PossibleMoves()[0]): # on veut bouger le pion normalement
+                if pos_arrivee in piece.PossibleMoves()[0]: # on veut bouger le pion normalement
                     piece.set_piece_position(pos_arrivee)
                 else:
                     self.add_msg_error("Déplacement interdit")

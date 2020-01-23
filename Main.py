@@ -67,8 +67,6 @@ def init_pieces(configuration):
     configuration.add_piece(roiN)
     configuration.init_roi(roiN)
 
-    #
-    configuration.add_piece(Pion("p", [7, 5]))
 
 def affichage_plateau(matrice_affichage):
     """
