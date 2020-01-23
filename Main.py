@@ -166,7 +166,7 @@ def game_pvp():
         else:
             if configuration.est_en_eche_et_mat(joueur):
                 print('\x1b[0;30;41m' + 'ECHEC ET MAT !' + '\x1b[0m')  # couleur rouge
-                print("Les noirs ont gagne !")
+                print("Les blancs ont gagne !")
                 game = False
 
             # if configuration.pat(joueur):
