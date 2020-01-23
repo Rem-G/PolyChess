@@ -245,11 +245,11 @@ class GeneralConf():
         for piece1 in self.pieces:
             if not self.sameTeam(piece, piece1):
                 if piece1.__class__ is Pion:
-                    if pos_arrivee in piece1.PossibleMoves()[1] and self.verification_deplacement_new(piece1,piece1.PossibleMoves(),pos_arrivee):
+                    if pos_arrivee in piece1.PossibleMoves()[1] and self.verification_deplacement(piece1,piece1.PossibleMoves(),pos_arrivee):
                         # pour le pion on verifie juste l'attaque mais pas le deplacement car le pion ne menace qu'en diagonale
                         return True
                 else:
-                    if self.verification_deplacement_new(piece1, piece1.PossibleMoves(),
+                    if self.verification_deplacement(piece1, piece1.PossibleMoves(),
                                                          pos_arrivee):  # si la piece enemi peut se deplacer sur cette case alors la case est menace
                         return True
         return False
@@ -257,29 +257,6 @@ class GeneralConf():
     # =============================================================================
     #   Les fonctions si dessous on pour rôle de vérifier les déplacements et
     #   les actions associées aux pièces
-    # =============================================================================
-    def verification_deplacement(self, moves, pos_arrivee):
-        """
-        @RG
-        Vérifie si pour les mouvements d'une pièce donnée, sa position d'arrivée est autorisée
-        Prend en compte les déplacements classiques ainsi que les déplacements pour manger une pièce adverse
-        :param moves: Déplacements autorisés de la pièce
-        :param pos_arrivee: Destination voulue par le joueur pour la pièce
-        :return bool: Renvoie vrai si le déplacement est autorisé, faux sinon
-        """
-        possible_moves = moves[0]
-        possible_eat = moves[1]
-
-        emplacements_pieces = list()
-        [emplacements_pieces.append(piece.position) for piece in self.pieces]
-
-        if pos_arrivee in possible_moves and pos_arrivee not in emplacements_pieces or pos_arrivee in possible_eat:
-            # Vérification si la position d'arrivee correspond à un mouvement autorisé et qu'elle n'est pas à l'emplacement d'une pièce existante
-            # Si la position d'arrivée correspond à l'emplacement d'une pièce existante, on vérifie si elle peut être mangée
-            if self.board.matrice_jeu()[pos_arrivee[0]][pos_arrivee[1]] != -1:
-                # Vérification si la position d'arrivée voulue est sur le plateau de jeu
-                return True
-        return False
 
     def mange_piece(self, piece, possible_eat, pos_arrivee):
         """
@@ -324,7 +301,7 @@ class GeneralConf():
                     self.add_msg_error("déplacement interdit ou mise en échec du roi")
 
         if piece.__class__ is Pion:
-            if self.verification_deplacement_new(piece, piece.PossibleMoves(), pos_arrivee):
+            if self.verification_deplacement(piece, piece.PossibleMoves(), pos_arrivee):
                 if self.case_occupe(pos_arrivee[0], pos_arrivee[1]) and (pos_arrivee in piece.PossibleMoves()[1]): # on veut attaquer et la case est occupee
                     self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
                 elif pos_arrivee in piece.PossibleMoves()[0]: # on veut bouger le pion normalement
@@ -335,7 +312,7 @@ class GeneralConf():
                 self.add_msg_error("Déplacement interdit")
 
         if not (piece.__class__ is Roi) and not(piece.__class__ is Pion):
-            if self.verification_deplacement_new(piece, piece.PossibleMoves(), pos_arrivee):
+            if self.verification_deplacement(piece, piece.PossibleMoves(), pos_arrivee):
                 if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
                     self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
                 else:
@@ -407,7 +384,7 @@ class GeneralConf():
             # Si le joueur entre des coordonnées en dehor du plateau de jeu
             self.add_msg_error("Merci de jouer sur le plateau")
 
-    def verification_deplacement_new(self, piece, moves, pos_arrivee):
+    def verification_deplacement(self, piece, moves, pos_arrivee):
         """
         @NR
         execute les verfication deplacement en fonction du type de la piece
@@ -727,7 +704,7 @@ class GeneralConf():
                 if (piece is not roi) and (self.sameTeam(piece, roi)):
                     for move_allie in piece.PossibleMoves()[
                         1]:  # RAPPEL: PossibleMoves()[1] -> les attaques de la piece
-                        if self.verification_deplacement_new(piece, piece.PossibleMoves(),
+                        if self.verification_deplacement(piece, piece.PossibleMoves(),
                                                              move_allie):  # on regarde si le deplacement est possible
                             # il faut maintenant tester: si on fait le coup, le roi est sauve ou pas
                             liste_simul_echiquier = self.simul_mange_piece(piece, piece.PossibleMoves()[1],

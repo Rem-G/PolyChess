@@ -68,6 +68,7 @@ def init_pieces(configuration):
     configuration.init_roi(roiN)
 
 
+
 def affichage_plateau(matrice_affichage):
     """
     @RG
