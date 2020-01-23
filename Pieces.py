@@ -78,9 +78,6 @@ class Roi(Piece):
         :type nom: string
         """
         super().__init__(nom, pos_initiale)
-        self.pos_intiale = pos_initiale
-        self.check = False
-        self.checkMate = False
 
     def PossibleMoves(self):
         """ return une liste des moves possibles pour le roi @NR"""
@@ -105,7 +102,6 @@ class Roi(Piece):
 class Tour(Piece):                                          
     def __init__(self, nom, pos_initiale):                  
         super().__init__(nom, pos_initiale)                 
-        self.pos_intiale = pos_initiale
 
 
     def PossibleMoves(self):
