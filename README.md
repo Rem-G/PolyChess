@@ -19,6 +19,8 @@ Python 3.x
 
 ## Lancement du jeu
 Pour lancer le jeu, placez-vous dans le répertoire Polychess et lancez Main.py.
+
+## Comment jouer ?
 Tour à tour les joueurs communiquent leurs intentions de jeu selon le format suivant : x1y1 x2y2
 x1y1 représentant les coordonnées initiales de la pièce à déplacer et x2y2 les coordonnées de la destination de la pièce.
 **Exemple :** a2 a4
