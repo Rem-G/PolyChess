@@ -54,6 +54,7 @@ class GeneralConf():
         self.died_pieces_N = list()
         self.in_promotion = False
         self.dernierCoup = list()
+        self.pieces_firstMove = list()
 
     def add_piece(self, piece):
         """
@@ -61,6 +62,8 @@ class GeneralConf():
         Ajoute une nouvelle pièce à la liste de pièces existantes
         """
         self.pieces.append(piece)
+        if (piece.__class__ is Roi) or (piece.__class__ is Tour): #je pense que c'est pas la peine pour Pion mais bizarre de ne pas traiter de la meme facon
+            self.pieces_firstMove.append(piece) # on n'ajoute pas le pion car si c'est son premier coup ou pas, c'est deplacements ne sont pas les memes
 
     def del_piece(self, piece):
         """
@@ -305,7 +308,7 @@ class GeneralConf():
 
         if piece.__class__ is Roi:  # on regarde si la piece en question en roi, au quel cas on doit verifier si le move entraine un echec ou echec et matt
             roque_roi_fait = False
-            if piece.firstMove() == True:  # roi n'a pas encore joue son premier tour
+            if piece in self.pieces_firstMove:  # roi n'a pas encore joue son premier tour
                 # on essaie le roque
                 roque_roi_fait = self.roqueRoi(piece, pos_arrivee)
 
@@ -314,6 +317,8 @@ class GeneralConf():
                     self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
                 else:
                     piece.set_piece_position(pos_arrivee)
+                if piece in self.pieces_firstMove:  # on supprime le roi de pieces_firstMove si c'est sont premier coup
+                    self.pieces_firstMove.remove(piece)
             else:
                 if not (roque_roi_fait):
                     self.add_msg_error("déplacement interdit ou mise en échec du roi")
@@ -335,7 +340,8 @@ class GeneralConf():
                     self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
                 else:
                     piece.set_piece_position(pos_arrivee)
-
+                if piece in self.pieces_firstMove:  # on supprime la piece de pieces_firstMove si c'est sont premier coup (cf. tour)
+                    self.pieces_firstMove.remove(piece)
             else:
                 self.add_msg_error("Déplacement interdit")
 
@@ -611,7 +617,7 @@ class GeneralConf():
                     if piece.position == pos_arrivee and self.sameTeam(piece, pion):
                         return False
             else: # si la case n'est pas occupe, on renvoit quand même True, mais la validation de l'attaque n'est geree que dans tour_joueur()
-                return True # on dit que la case est potentiellement menacee (cf. fonction case_menace())
+                return True # on dit que la case est potentiellement menacee (cf. fonction case_menace()), car le pion ne peut pas toute de suite attaquer
 
         # DEPLACEMENT NORMAL
         if pos_arrivee in possible_moves or (
@@ -882,7 +888,7 @@ class GeneralConf():
                     piece1)  # on fait une liste de tour allie pour ne pas devoir a le chercher a chaque fois
         for tour in tour_allie:
             if tour.position == pos_arrivee:
-                if tour.firstMove():
+                if tour in self.pieces_firstMove:
                     for posCol in range(roi.get_piece_position()[1] + 1, tour.get_piece_position()[1]):  # on parcours
                         # l'echiquier sur l'horizontale entre les 2 pieces (de gauche à droite)
                         if self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol,
@@ -909,5 +915,9 @@ class GeneralConf():
 
                     roi.set_piece_position([line_roi, col_roi])
                     tour.set_piece_position([line_tour, col_tour])
+
+                    self.pieces_firstMove.remove(roi) #on supprime le roi et la tour de pieces_firstMove car ils ont fait leur premier tour
+                    self.pieces_firstMove.remove(tour)
+
                     return True
         return False

@@ -82,13 +82,6 @@ class Roi(Piece):
         self.check = False
         self.checkMate = False
 
-    def firstMove(self):
-        """
-        verifie si c'est son premier coup
-        :return: True si oui, false sinon
-        """
-        return (self.position == self.pos_intiale)
-
     def PossibleMoves(self):
         """ return une liste des moves possibles pour le roi @NR"""
         # je teste avec les coordonnees carstesiennes pas avec les coordonnes de l'echiquer
@@ -114,13 +107,6 @@ class Tour(Piece):                                          ####################
         super().__init__(nom, pos_initiale)                 # la piece ne peut pas sauter par dessus les autres pieces##
         self.pos_intiale = pos_initiale
 
-
-    def firstMove(self):
-        """
-        verifie si c'est son premier coup
-        :return: True si oui, false sinon
-        """
-        return self.position == self.pos_intiale
 
     def PossibleMoves(self):
         '''
