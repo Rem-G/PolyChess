@@ -149,12 +149,6 @@ def game_pvp():
                 print("Les noirs ont gagne !")
                 game = False
 
-            # if configuration.pat(joueur):
-            #     print('\x1b[0;30;41m' + 'PAT !' + '\x1b[0m')
-            #     print("La partie est nulle !")
-            #     game = False
-
-
             if game is True:
                 print("\nAu tour du joueur blanc")
 
@@ -168,11 +162,6 @@ def game_pvp():
                 print('\x1b[0;30;41m' + 'ECHEC ET MAT !' + '\x1b[0m')  # couleur rouge
                 print("Les blancs ont gagne !")
                 game = False
-
-            # if configuration.pat(joueur):
-            #     print('\x1b[0;30;41m' + 'ECHEC ET MAT !' + '\x1b[0m')
-            #     print("La partie est nulle !")
-            #     game = False
 
             if game is True:
                 print('\nAu tour du joueur noir')
