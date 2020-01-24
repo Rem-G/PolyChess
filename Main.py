@@ -84,7 +84,7 @@ def affichage_plateau(matrice_affichage):
 
 def decision_joueur(decision, configuration):
     """
-    Convertie la dédicision du joueur de str vers coordonnées matricielles ex : a2 -> [8, 1]
+    Convertie la décision du joueur de str vers coordonnées matricielles ex : a2 -> [8, 1]
     :param decision: Choix de jeu du joueur en str
     :return list: Choix de jeu du joueur en list
     """
@@ -208,15 +208,6 @@ def game_pvm():
     print('Vous allez jouer contre un BOT')
     configuration = GeneralConf()
 
-    # Crée le joueur en fonction de son choix
-    valid = False
-    while not(valid):
-        chx_couleur = str(input('Merci de choisir votre camp (B/N) : '))
-        if chx_couleur == 'N' or chx_couleur == 'B':
-            valid = True
-        else:
-            print('ERROR : merci de choisir une couleur de pion valide (B/N).')
-
     configuration.init_joueurs()
 
     init_pieces(configuration) # Création des pièces
@@ -225,10 +216,7 @@ def game_pvm():
     configuration.pieces_joueurs()
 
     print(configuration.joueurN.points)
-    if chx_couleur == 'B':
-        configuration.joueurN.init_bot(configuration)
-    else:
-        configuration.joueurB.init_bot(configuration)
+    configuration.joueurN.init_bot(configuration)
 
     # Affiche le palteau de jeu initial
     affichage_plateau(configuration.matrice_affichage())
@@ -249,27 +237,15 @@ def game_pvm():
                 print('\x1b[0;30;41m' + 'ATTENTION !' + '\x1b[0m') #couleur rouge
                 print("Le roi blanc est en echec \nProtegez le !")
 
-        else:
-            print('\nAu tour du joueur noir')
-            if configuration.est_en_echec(joueur):
-                print("")
-                print('\x1b[0;30;41m' + 'ATTENTION !' + '\x1b[0m')
-                print("Le roi noir est en echec \nProtegez le !")
-
-        input_decision = input("\nEntrer x1y1 x2y2  ou sauvegarde pour sauvegarder la partie et quitter: ")
-
-        if input_decision == 'sauvegarde':
-            configuration.sauvegarde_partie(joueur)
-            print('Partie sauvegardée !')
-            break
-
-        else:
-            decision = decision_joueur(input_decision, configuration)
+        if joueur == 1:
+            input_decision = input("\nEntrer x1y1 x2y2  ou sauvegarde pour sauvegarder la partie et quitter: ")
             print('\n')
-            if joueur == 1:
-                configuration.deplacement_piece(decision[0], decision[1], True)
-            else:
-                configuration.deplacement_piece(decision[0], decision[1], False)
+            decision = decision_joueur(input_decision, configuration)
+
+            configuration.deplacement_piece(decision[0], decision[1], True)
+        else:
+            decision = configuration.joueurN.BOT.randomChoice()
+            configuration.deplacement_piece(decision[0], decision[1], False)
 
         affichage_plateau(configuration.matrice_affichage())
 
@@ -278,10 +254,6 @@ def game_pvm():
                 configuration.promotion(piece)
                 piece.promotion = False
 
-        for piece in configuration.pieces_joueurN:
-            if piece.get_piece_position()[0] == 9 and piece.nom == 'p' and piece.promotion:
-                configuration.promotion(piece)
-                piece.promotion = False
 
         if len(configuration.msg_error):
             for msg in configuration.msg_error:

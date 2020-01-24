@@ -42,7 +42,7 @@ class Pion(Piece):
         if self.nom == 'p':
             moves.append([self.position[0] + 1, self.position[1]])
 
-            if self.position == self.pos_initiale: #pour eviter tout problemes, le bug vu avec thomas
+            if self.position == self.pos_initiale:
                 moves.append([self.position[0] + 2, self.position[1]])
                 self.firstMoveOver()
 
@@ -52,7 +52,7 @@ class Pion(Piece):
         if self.nom == 'P':
             moves.append([self.position[0] - 1, self.position[1]])
 
-            if self.position == self.pos_initiale: #pour eviter tout problemes, le bug vu avec thomas
+            if self.position == self.pos_initiale:
                 moves.append([self.position[0] - 2, self.position[1]])
                 self.firstMoveOver()
 
@@ -75,14 +75,12 @@ class Roi(Piece):
 
     def PossibleMoves(self):
         """ return une liste des moves possibles pour le roi"""
-        # je teste avec les coordonnees carstesiennes pas avec les coordonnes de l'echiquer
 
         x = self.position[0]
         y = self.position[1]
 
-        # pour moi move et capture sont les meme
 
-        moves = []  # list de move qui sont aussi des listes
+        moves = []  
         for i in range(-1, 2):
             for j in range(-1, 2):
                 if i != 0 or j != 0:
@@ -156,7 +154,7 @@ class Cavalier(Piece):
 
         x, y = self.position[0], self.position[1]
 
-        moves.append([x + 2, y + 1])  # il a oublié les accolades pour dire que c'est une liste
+        moves.append([x + 2, y + 1])  
         moves.append([x + 2, y - 1])
         moves.append([x + 1, y + 2])
         moves.append([x + 1, y - 2])
@@ -179,7 +177,7 @@ class Fou(Piece):
 
     def PossibleMoves(self):
         '''
-        Retourne la liste des mouvements d'un fou en connaissant  sa position initial
+        Retourne la liste des mouvements d'un fou en connaissant  sa position initiale
         '''
         x = self.position[1]
         y = self.position[0]
@@ -231,7 +229,7 @@ class Dame(Piece):
 
     def PossibleMoves(self):
         '''
-        Retourne la liste des mouvements d'un fou en connaissant  sa position initial
+        Retourne la liste des mouvements d'un fou en connaissant  sa position initiale
         '''
         x = self.position[1]
         y = self.position[0]
