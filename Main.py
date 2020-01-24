@@ -128,7 +128,7 @@ def game_pvp():
 
     game = True
 
-    while game:  # Rajouter option echec et mat + afficher pièces mangées
+    while game:
         configuration.enPassant()
 
         if configuration.enPassant()[0] == True:
