@@ -12,7 +12,9 @@ Il se décline en deux versions, une se jouant dans un terminal de commandes et 
 ## Fonctionnalités:
 Les fonctionnalités disponible sont les suivantes :
 - **Un mode joueur contre joueur :** Ce mode de jeu permet d'affronter un autre joueur. Les règles de base des échecs sont       implémentées (les déplacements possibles, la mise en échec, échec et mat ainsi que le pat). Les coups spéciaux disponibles au échecs sont implémentés, tel que le roque, l'en passant et la promotion. A tout moment de la partie les joueurs peuvent voir les pièces détruites.
+- **Un mode joueur contre machine :** Ce mode de jeu permet d'affronter la machine. Le bot n'étant pas finalisé, il joue aléatoirement un déplacement parmi les déplacements possibles de toutes ses pièces.
 - **Sauvegarde d'une partie :** Un joueur peut sauvegarder une partie à tout moment et la reprendre plus tard.
+
 
 
 ## Pré-requis :
