@@ -831,18 +831,18 @@ class GeneralConf():
         for piece1 in self.pieces:
             if piece1.__class__ is Tour and self.sameTeam(roi, piece1):
                 tour_allie.append(
-                    piece1)  # on fait une liste de tour allie pour ne pas devoir a le chercher a chaque fois
+                    piece1)  # on fait une liste de tour alliees pour ne pas devoir à le chercher a chaque fois
         for tour in tour_allie:
             if tour.position == pos_arrivee:
                 if tour in self.pieces_firstMove:
-                    for posCol in range(roi.get_piece_position()[1] + 1, tour.get_piece_position()[1]):  # on parcours
+                    for posCol in range(roi.get_piece_position()[1] + 1, tour.get_piece_position()[1]):  # on parcourt
                         # l'echiquier sur l'horizontale entre les 2 pieces (de gauche à droite)
                         if self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol,
                                                                                          roi):  # on
                             # ne peut pas faire le roque, si les cases entre le roi et la tour sont occupees ou menacees.
                             return False
                     # OU (uniquement une des deux boucles for est executee)
-                    for posCol in range(tour.get_piece_position()[1] + 1, roi.get_piece_position()[1]):  # on parcours
+                    for posCol in range(tour.get_piece_position()[1] + 1, roi.get_piece_position()[1]):  # on parcourt
                         # l'echiquier sur l'horizontale entre les 2 pieces (de doite à gauche)
                         if self.case_occupe(roi.position[0], posCol) or self.case_menace(roi.position[0], posCol, roi):
                             return False
