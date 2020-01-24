@@ -229,27 +229,42 @@ class GeneralConf():
             return True
         return False
 
-    def case_menace(self, posLine, posCol, piece):
+    def case_menace(self, posLine, posCol, roi): #roi comme param au lieu de piece
         """
-        vérifie si la case est au moins menace par une piece de l'ennemi
-        :param posLine:  position ligne INT
-        :param posCol: position colonne INT
-        :param piece: piece appartenant à l'équipe ami
-        :return: True si la case est menace, False sinon
-        """
+            @NR vérifie si la case est au moins menace par une piece de l'ennemi
+            :param posLine:  position ligne INT
+            :param posCol: position colonne INT
+            :param roi: roi appartenant à l'équipe alliee
+            :return: True si la case est menace, False sinon
+            """
         pos_arrivee = [posLine, posCol]
-        for piece1 in self.pieces:
-            if not self.sameTeam(piece, piece1):
-                if piece1.__class__ is Pion:
-                    if pos_arrivee in piece1.PossibleMoves()[1] and self.verification_deplacement(piece1,
-                                                                                                  piece1.PossibleMoves(),
-                                                                                                  pos_arrivee):
+
+        pieces = [] #liste des pieces de l'echiquier
+        for p in self.pieces:
+            pieces.append(p)
+
+        for piece_ennemie1 in pieces:
+            if not self.sameTeam(roi, piece_ennemie1):
+                if piece_ennemie1.__class__ is Pion:
+                    if pos_arrivee in piece_ennemie1.PossibleMoves()[1] and self.verification_deplacement(piece_ennemie1,piece_ennemie1.PossibleMoves(),pos_arrivee):
                         # pour le pion on verifie juste l'attaque mais pas le deplacement car le pion ne menace qu'en diagonale
                         return True
                 else:
-                    if self.verification_deplacement(piece1, piece1.PossibleMoves(),
-                                                     pos_arrivee):  # si la piece enemi peut se deplacer sur cette case alors la case est menace
+                    if self.verification_deplacement(piece_ennemie1, piece_ennemie1.PossibleMoves(), pos_arrivee):
                         return True
+                    else: #un autre cas ou la case peut etre menacee
+                        # on verifie que l'attaque du roi ne le met pas en echec. On considere donc que la case attaquee par le roi est menacee
+                        if (roi.position != pos_arrivee) and self.case_occupe(posLine, posCol): #si la case est occupe, on enleve la piece, on regarde si la piece1 peut se deplacer jusqu'a la case, si c'est le cas alors
+                            for piece_ennemie2 in pieces: # la case est menacee
+                                #La piece_ennemie1 protege la piece_ennemie2
+                                if (piece_ennemie1 != piece_ennemie2) and (piece_ennemie2.position ==[posLine, posCol]) and (self.sameTeam(piece_ennemie1, piece_ennemie2)) and (piece_ennemie2.position in roi.PossibleMoves()[1]):
+                                    piece_enleve = piece_ennemie2
+                                    self.pieces.remove(piece_ennemie2)
+                                    if self.verification_deplacement(piece_ennemie1, piece_ennemie1.PossibleMoves(),pos_arrivee): # on regarde si la piece1 peut se deplacer sur la case ou etait la piece2
+                                        self.add_piece(piece_enleve)
+                                        return True #si oui alors elle est menacee
+                                    else:
+                                        self.add_piece(piece_enleve)
         return False
 
     # =============================================================================
@@ -286,8 +301,8 @@ class GeneralConf():
                 # on essaie le roque
                 roque_roi_fait = self.roqueRoi(piece, pos_arrivee)
 
-            if not (roque_roi_fait) and self.verification_deplacement_roi(piece, piece.PossibleMoves(),
-                                                                          pos_arrivee):  # deplacement normal du roi
+            if not (roque_roi_fait) and self.verification_deplacement_roi(piece, piece.PossibleMoves(), pos_arrivee) and not(self.case_menace(pos_arrivee[0], pos_arrivee[1], piece)):
+                # deplacement normal du roi
                 if self.case_occupe(pos_arrivee[0], pos_arrivee[1]):
                     self.mange_piece(piece, piece.PossibleMoves()[1], pos_arrivee)
                 else:
@@ -418,8 +433,7 @@ class GeneralConf():
                 possible_moves.remove(piece.position)
         # pas de probleme si l'emplacement est vide ou il y a un ennemi
 
-        if (pos_arrivee in possible_moves) and not (self.case_menace(pos_arrivee[0], pos_arrivee[1],
-                                                                     roi)):
+        if (pos_arrivee in possible_moves):
             # verification si la position d'arrivee est dans les moves possibles et qu'il n'y pas de piece à cette emplacement ou que on peut manger une piece a cet emplacement
             # et que dans les deux cas la position d'arrivee ne soit pas un emplacement que pourrait prendre l'ennemi
             if self.board.matrice_jeu()[pos_arrivee[0]][pos_arrivee[1]] != -1:
@@ -686,10 +700,14 @@ class GeneralConf():
             # on test si le roi peut se proteger lui meme
             for move_arrive in roi.PossibleMoves()[1]:
                 if self.verification_deplacement_roi(roi, roi.PossibleMoves(),
-                                                     move_arrive):  # verfie si pour chaque coup du roi, il ne se met pas en echec
+                                                     move_arrive) and not(self.case_menace(move_arrive[0], move_arrive[1], roi)):  ### verfie si pour chaque coup du roi, il ne se met pas en echec
                     return False
             # on verfie si une piece allie peut proteger le roi
             # Pour cela on test pour chaque piece, tout les coups possibles et on regarde si apres le roi n'est plus en echec
+            pieces = []
+            for p in self.pieces:
+                pieces.append(p)
+
             for piece in self.pieces:
                 if (piece is not roi) and (self.sameTeam(piece, roi)):
                     for move_allie in piece.PossibleMoves()[
@@ -729,7 +747,7 @@ class GeneralConf():
             # Supprime une pièce adverse si la position d'arrivée voulue correspond à l'emplacement d'une pièce adverse
             if not (self.sameTeam(p, piece)) and pos_arrivee == p.position and pos_arrivee in possible_eat:
                 simul_piece_mange = p
-                self.del_piece(p)
+                self.pieces.remove(p)
 
         simul_piece_bouge = piece
         piece.set_piece_position(pos_arrivee)
